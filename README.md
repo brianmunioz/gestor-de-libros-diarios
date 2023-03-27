@@ -22,7 +22,7 @@
 
 | Parámetros | Tipo de dato     | Descripción                       |
 | :-------- | :------- | :-------------------------------- |
-| `id`      | `entero` | **Requerido**. para obtener acientos  |
+| `id_libro_diario`| `entero` | **Requerido**. para obtener acientos  |
 
 
 
