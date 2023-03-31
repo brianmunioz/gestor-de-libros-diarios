@@ -1,11 +1,11 @@
-const LibroDiario = require('../baseDeDatos/libroDiario.baseDeDatos')
-let ldiarioServicio;
+const LibroDiarioBDD = require('../baseDeDatos/libroDiario.baseDeDatos')
+let _libroDiarioBB;
 class LibroDiarioServicio {
   constructor() {
-    ldiarioServicio = new LibroDiario;
+    _libroDiarioBB = new LibroDiarioBDD;
   }
   async obtenerLibrosDiarios() {
-    return ldiarioServicio.obtenerLibrosDiarios();
+    return _libroDiarioBB.obtenerLibrosDiarios();
   }
   async agregarLibroDiario(data, autorID){
     if(!data){
@@ -26,7 +26,7 @@ class LibroDiarioServicio {
     data.fecha_creacion = new Date();
     data.fecha_actualizacion = new Date();
 
-    return ldiarioServicio.agregarLibroDiario(data);
+    return _libroDiarioBB.agregarLibroDiario(data);
 
   }
   async editarLibroDiario(data,libroDiarioID){
@@ -39,35 +39,31 @@ class LibroDiarioServicio {
       err.status = 400;
       throw err;
     }
-    if(!autorID){
-      const err = new Error('Usted no está autorizado');
-      err.status = 401;
-      throw err;
-    }
+   
     data.libroDiarioID = libroDiarioID;
     data.fecha_actualizacion = new Date();
 
-    return ldiarioServicio.editarLibroDiario(data);
+    return _libroDiarioBB.editarLibroDiario(data);
 
   }
   async eliminarLibroDiario( libroDiarioID){
    
-    if(!autorID){
+    if(!libroDiarioID){
       const err = new Error('Usted no está autorizado');
       err.status = 401;
       throw err;
     }
 
-    return ldiarioServicio.eliminarLibroDiario(autorID);
+    return _libroDiarioBB.eliminarLibroDiario(libroDiarioID);
 
   }
-  async obtenerAcientos(librodiario_id) {
-    if (!librodiario_id) {
+  async obtenerAcientos(libroDiarioID) {
+    if (!libroDiarioID) {
       const err = new Error('Debe ingresar un id válido');
       err.status = 400
       throw err
     } else {
-      return ldiarioServicio.obtenerAcientos(librodiario_id);
+      return _libroDiarioBB.obtenerAcientos(libroDiarioID);
     }
   }
 
@@ -113,11 +109,11 @@ class LibroDiarioServicio {
     }
     data.libroDiarioID = libroDiarioID;
 
-    return ldiarioServicio.agregarAciento(data);
+    return _libroDiarioBB.agregarAciento(data);
 
   }
 
-  async editarAciento(data,IDAciento){
+  async editarAciento(data,acientoID){
     if(!data){
       const err = new Error('Debe ingresar los datos para que se pueda subir el aciento al libro diario');
       err.status = 400
@@ -158,8 +154,8 @@ class LibroDiarioServicio {
       throw err
     }
 
-data.IDAciento = IDAciento;
-    return ldiarioServicio.editarAciento(data);
+data.acientoID = acientoID;
+    return _libroDiarioBB.editarAciento(data);
 
   }
   async eliminarAciento( acientoID){
@@ -170,7 +166,7 @@ data.IDAciento = IDAciento;
       throw err;
     }
 
-    return ldiarioServicio.eliminarAciento(acientoID);
+    return _libroDiarioBB.eliminarAciento(acientoID);
 
   }
 }

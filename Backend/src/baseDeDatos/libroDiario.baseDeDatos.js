@@ -1,6 +1,6 @@
 const conexionBDD = require("./crearConexion.baseDeDatos");
 let _conn;
-class LibroDiario {
+class LibroDiarioBDD {
   constructor() {
     _conn = conexionBDD()
   }
@@ -41,9 +41,9 @@ class LibroDiario {
   }
 
 //acientos contables
-  async obtenerAcientos(librodiario_id) {
+  async obtenerAcientos(libroDiarioID) {
     return new Promise((resolve, reject) => {
-      _conn.query(`SELECT * FROM acientos WHERE id= ?`,[librodiario_id], (error, results, fields) => {
+      _conn.query(`SELECT * FROM acientos WHERE libro_diario= ?`,[libroDiarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
@@ -62,7 +62,7 @@ class LibroDiario {
   async editarAciento(data) {
 
     return new Promise((resolve, reject) => {
-      _conn.query(`UPDATE aciento SET  variacion_patrimonial = ? , cuenta= ? , fecha = ? , monto = ? , tipo = ? WHERE id= ? `,[data.vp,data.cuenta,data.fecha,data.monto,data.tipo,data.acientoID], (error, results, fields) => {
+      _conn.query(`UPDATE acientos SET  variacion_patrimonial = ? , cuenta= ? , fecha = ? , monto = ? , tipo = ? WHERE id= ? `,[data.vp,data.cuenta,data.fecha,data.monto,data.tipo,data.acientoID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
@@ -71,7 +71,7 @@ class LibroDiario {
   async eliminarAciento(acientoID) {
 
     return new Promise((resolve, reject) => {
-      _conn.query(`DELETE FROM aciento WHERE id = ? `,[acientoID], (error, results, fields) => {
+      _conn.query(`DELETE FROM acientos WHERE id = ? `,[acientoID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
@@ -79,4 +79,4 @@ class LibroDiario {
   }
 
 }
-module.exports = LibroDiario
+module.exports = LibroDiarioBDD

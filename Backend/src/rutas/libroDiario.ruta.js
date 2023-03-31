@@ -1,17 +1,16 @@
 const {Router} = require('express');
-const LibroDiarioControlador = require('../controladores/libroDiario.controlador')
+const {LibroDiarioControlador} = require('../controladores/index')
 module.exports = function () {
     const router = Router();
-    const controlador = new  LibroDiarioControlador;
-    router.get("/verLibrosDiarios", controlador.obtenerLibrosDiarios);
-    router.post("/agregarLibroDiario", controlador.agregarLibroDiario);
-    router.patch("/editarLibroDiario/:libroDiarioID", controlador.editarLibroDiario);
-    router.delete("/eliminarLibroDiario/:libroDiarioID", controlador.eliminarLibroDiario);
+    router.get("/verLibrosDiarios", LibroDiarioControlador.obtenerLibrosDiarios);
+    router.post("/agregarLibroDiario", LibroDiarioControlador.agregarLibroDiario);
+    router.patch("/editarLibroDiario/:libroDiarioID", LibroDiarioControlador.editarLibroDiario);
+    router.delete("/eliminarLibroDiario/:libroDiarioID", LibroDiarioControlador.eliminarLibroDiario);
 
-    router.get('/verAcientos',controlador.obtenerAcientos)
-    router.post('/agregarAciento/:libroDiarioID',controlador.agregarAciento)
-    router.patch('/editar/:acientoID',controlador.editarAciento)
-    router.delete("/eliminarAciento/:acientoID", controlador.eliminarAciento);
+    router.get('/verAcientos/:libroDiarioID',LibroDiarioControlador.obtenerAcientos)
+    router.post('/agregarAciento/:libroDiarioID',LibroDiarioControlador.agregarAciento)
+    router.patch('/editar/:acientoID',LibroDiarioControlador.editarAciento)
+    router.delete("/eliminarAciento/:acientoID", LibroDiarioControlador.eliminarAciento);
 
 
     return router;

@@ -10,38 +10,66 @@ class LibroDiarioControlador{
         return res.json(respuesta)
     }
     async agregarLibroDiario(req, res) {
-        const respuesta = await _libroDiarioServicio.agregarLibroDiario(res.data,req.user.id);
+        const {body} = req;
+        const {user} = req.headers
+
+        const respuesta = await _libroDiarioServicio.agregarLibroDiario(body,user);
         return res.json(respuesta)
     }
     async editarLibroDiario(req, res) {
         const {libroDiarioID } = req.params;
-        const respuesta = await _libroDiarioServicio.editarLibroDiario(res.data,libroDiarioID);
-        return res.json(respuesta)
+        const {body} = req;
+        console.log(user)
+        const respuesta = await _libroDiarioServicio.editarLibroDiario(body,libroDiarioID);
+        if(respuesta.affectedRows > 0){
+            respuesta.status = 200;
+            respuesta.mensaje = 'Libro diario editado!';
+            }  
+        return res.status(200).json(respuesta)
     }
     async eliminarLibroDiario(req, res) {
         const { libroDiarioID } = req.params;
         const respuesta = await _libroDiarioServicio.eliminarLibroDiario(libroDiarioID);
-        return res.json(respuesta)
+        if(respuesta.affectedRows > 0){
+        respuesta.status = 200;
+        respuesta.mensaje = 'Libro Diario '+ libroDiarioID+ ' eliminado!';
+        }
+        
+        return res.status(200).json(respuesta)
     }
+
+    //acientos
     async obtenerAcientos(req, res) {
-        const respuesta = await _libroDiarioServicio.obtenerAcientos();        
+        const {libroDiarioID} = req.params; 
+        const respuesta = await _libroDiarioServicio.obtenerAcientos(libroDiarioID);        
         return res.json(respuesta)
     }
     async agregarAciento(req, res) {
         const { libroDiarioID } = req.params;
+        // const {user} = req.headers
 
-        const respuesta = await _libroDiarioServicio.agregarAciento(res.data);        
-        return res.status(201).json(respuesta, libroDiarioID)
+        const {body} = req;
+        const respuesta = await _libroDiarioServicio.agregarAciento(body, libroDiarioID);        
+        return res.status(201).json(respuesta)
     }
     async editarAciento(req, res) {
-        const { IDAciento } = req.params;
-        const respuesta = await _libroDiarioServicio.editarAciento(res.data);        
-        return res.status(200).json(respuesta, IDAciento)
+        const { acientoID } = req.params;
+        const {body} = req;
+        const respuesta = await _libroDiarioServicio.editarAciento(body, acientoID);  
+        if(respuesta.affectedRows > 0){
+            respuesta.status = 200;
+            respuesta.mensaje = 'Aciento editado!';
+            }      
+        return res.status(200).json(respuesta)
     }
     async eliminarAciento(req, res) {
         const { acientoID } = req.params;
         const respuesta = await _libroDiarioServicio.eliminarAciento(acientoID);
-        return res.json(respuesta)
+        if(respuesta.affectedRows > 0){
+            respuesta.status = 200;
+            respuesta.mensaje = 'Aciento de id:'+ acientoID+ ' eliminado!';
+            }
+        return res.status.status(200).json(respuesta)
     }
 }
 
