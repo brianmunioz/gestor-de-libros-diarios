@@ -1,4 +1,4 @@
-const LibroDiarioBDD = require('../baseDeDatos/libroDiario.baseDeDatos')
+const LibroDiarioBDD = require('../baseDeDatos/libroDiario.baseDeDatos');
 let _libroDiarioBB;
 class LibroDiarioServicio {
   constructor() {

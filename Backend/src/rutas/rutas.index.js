@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const errorMiddleware = require('../middlewares/error.middleware');
 const libroDiarioRuta = require('./libroDiario.ruta');
+const usuariosRuta = require('./usuarios.ruta')
 const rutaPrincipal = express.Router();
 const rutas = express.Router();
 require('express-async-errors');
@@ -17,11 +18,10 @@ rutaPrincipal
 
 rutaPrincipal.use('/v1/api', rutas);
 
-rutas.use('/librodiario', libroDiarioRuta()) 
-
-
-rutaPrincipal.use(errorMiddleware)
+rutas.use('/librodiario', libroDiarioRuta());
+rutas.use('/usuarios', usuariosRuta()); 
 
 
 
+rutaPrincipal.use(errorMiddleware);
 module.exports = rutaPrincipal;
