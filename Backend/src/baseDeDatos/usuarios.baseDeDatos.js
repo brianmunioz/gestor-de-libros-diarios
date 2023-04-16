@@ -46,6 +46,8 @@ class UsuariosBDD {
         ) VALUES (NULL, ? , ? , ? , ?, ?, ?, ?, ?, ? )`, [data.nombre,data.apellido,data.fecha_nacimiento, data.fecha_creacion, data.fecha_actualizacion,
           ,data.rol, data.email, data.pass, data.registrado_desde], (error, results, fields) => {
         if (error) return reject(error);
+        results.mensaje = 'Usuario creado con éxito!';
+        results.status= 201;
         return resolve(results);
       });
     });

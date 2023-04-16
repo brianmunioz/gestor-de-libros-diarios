@@ -12,7 +12,6 @@ class LibroDiarioControlador{
     async agregarLibroDiario(req, res) {
         const {body} = req;
         const {user} = req.headers
-
         const respuesta = await _libroDiarioServicio.agregarLibroDiario(body,user);
         return res.json(respuesta)
     }

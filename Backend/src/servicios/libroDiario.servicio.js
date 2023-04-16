@@ -21,6 +21,10 @@ class LibroDiarioServicio {
       const err = new Error('Usted no está autorizado');
       err.status = 401;
       throw err;
+    }else if(isNaN(autorID)){
+      const err = new Error('Usuario no autorizado');
+      err.status = 401;
+      throw err;
     }
     data.autor = autorID;
     data.fecha_creacion = new Date();
@@ -39,7 +43,11 @@ class LibroDiarioServicio {
       err.status = 400;
       throw err;
     }
-   
+   if(!libroDiarioID || isNaN(libroDiarioID)){
+    const err = new Error('Debe ingresar un identifcador del libro diario que sea válido');
+    err.status = 401;
+    throw err;
+   }
     data.libroDiarioID = libroDiarioID;
     data.fecha_actualizacion = new Date();
 
@@ -48,8 +56,8 @@ class LibroDiarioServicio {
   }
   async eliminarLibroDiario( libroDiarioID){
    
-    if(!libroDiarioID){
-      const err = new Error('Usted no está autorizado');
+    if(!libroDiarioID || isNaN(libroDiarioID)){
+      const err = new Error('El identificador del id no es válido');
       err.status = 401;
       throw err;
     }
@@ -58,13 +66,14 @@ class LibroDiarioServicio {
 
   }
   async obtenerAcientos(libroDiarioID) {
-    if (!libroDiarioID) {
-      const err = new Error('Debe ingresar un id válido');
-      err.status = 400
-      throw err
-    } else {
+    if(!libroDiarioID || isNaN(libroDiarioID)){
+      const err = new Error('El identificador del id no es válido');
+      err.status = 401;
+      throw err;
+    } 
+
       return _libroDiarioBB.obtenerAcientos(libroDiarioID);
-    }
+    
   }
 
   async agregarAciento(data, libroDiarioID){
@@ -87,8 +96,8 @@ class LibroDiarioServicio {
       err.status = 400
       throw err
     }
-    else if(!data.librodiario_id){
-      const err = new Error('Debe ingresar el id del libro diario');
+    else if(!libroDiarioID|| isNaN(libroDiarioID)){
+      const err = new Error('Debe ingresar un identificador del libro diario que sea válido');
       err.status = 400
       throw err
     }
