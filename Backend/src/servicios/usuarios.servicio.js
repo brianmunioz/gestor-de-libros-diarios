@@ -1,3 +1,4 @@
+const { compareSync } = require('bcrypt');
 const UsuariosBDD = require('../baseDeDatos/usuarios.baseDeDatos');
 const { validarPassword } = require('../helpers');
 let _usuariosBDD;
@@ -8,7 +9,12 @@ class UsuariosServicio {
     async obtenerUsuarios() {
       return _usuariosBDD.obtenerUsuarios();
     } 
-
+    async buscarUsuarioPorEmail(email){
+      return _usuariosBDD.buscarUsuarioPorEmail(email)
+    }
+    async compararContraseñas(pass,hash){
+      return  compareSync(pass, hash);
+    }
     async cambiarPassword(data){
       const verificarPass = validarPassword(data.pass);
         if(!data){

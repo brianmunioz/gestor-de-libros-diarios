@@ -7,10 +7,9 @@ class AutorizacionServicio {
     constructor() {
         _usuarioServicio = new UsuarioServicio;
     }
-    async registrar(usuario) {
-       
+    async registrar(usuario) {       
         const regPatternEmail = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/;
-        const verificarPass = validarPassword(data.pass);
+        const verificarPass = validarPassword(usuario.pass);
         if(!usuario){
             const error = new Error('Es obligatorio enviar datos')
             error.status = 400;
@@ -32,37 +31,36 @@ class AutorizacionServicio {
             error.status = 401;
             throw error
         }
-        const existeUsuario = await _usuarioServicio.buscarUsuarioPorEmail(email); // crear busqueda de usuario por email
-        if (existeUsuario) {
+        const existeUsuario = await _usuarioServicio.buscarUsuarioPorEmail(usuario.email,true); 
+        if (existeUsuario.existe) {
             const error = new Error('El email usado ya está en uso');
             error.status = 400;
             throw error;
         }
-        data.rol = 'usuario';
-        data.fecha_creacion = new Date();
-        data.fecha_actualizacion = new Date();
-
-        data.pass = encriptarPassword(data.pass);
-
+        usuario.rol = 'usuario';
+        usuario.fecha_creacion = new Date();
+        usuario.fecha_actualizacion = new Date();
+        usuario.registrado_desde = new Date();
+        usuario.pass = encriptarPassword(usuario.pass);
         return await _usuarioServicio.agregarUsuario(usuario);
     }
     async iniciarSesion(usuario) {
         const { email, pass, recordar } = usuario;
         const horas = recordar === true ? '5d':'5h';
-        const existeUsuario = await _usuarioServicio.buscarUsuarioPorEmail(email); // crear busqueda de usuario por email
-        if (!existeUsuario) {
+        const existeUsuario = await _usuarioServicio.buscarUsuarioPorEmail(email,false); 
+        if (!existeUsuario.existe) {
             const error = new Error('Usuario o contraseña incorrecto');
             error.status = 404;
             throw error;
         }
-        const validarPass = await _usuarioServicio.compararContraseñas(pass); // crear comparacion de contraseñas incluyendo compareSync
+        const validarPass = await _usuarioServicio.compararContraseñas(pass, existeUsuario.pass);
         if (!validarPass) {
             const error = new Error('Usuario o contraseña incorrecto');
             error.status = 400;
             throw error;
         }
         const usuarioAEncriptar = {
-            username: existeUsuario.email,
+            username: email.email,
             nombre: existeUsuario.nombre,
             apellido: existeUsuario.apellido,
             id: existeUsuario.id,

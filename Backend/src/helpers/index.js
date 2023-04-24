@@ -1,7 +1,7 @@
-const encriptarPassword = require('./encriptarPassword');
-const validarPassword = require('./validarPassword')
+
 
 module.exports = {
-    encriptarPassword,
-    validarPassword
+    encriptarPassword: require('./encriptarPassword'),
+    validarPassword: require('./validarPassword'),
+    generarToken: require('./generarToken')
 }

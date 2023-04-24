@@ -3,9 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const errorMiddleware = require('../middlewares/error.middleware');
-const libroDiarioRuta = require('./libroDiario.ruta');
-const usuariosRuta = require('./usuarios.ruta');
-const autorizacionRuta = require('./autorizacion.ruta');
+const { librodiarioRuta, autorizacionRuta, usuariosRuta } = require('.');
 const rutaPrincipal = express.Router();
 const rutas = express.Router();
 require('express-async-errors');
@@ -19,9 +17,9 @@ rutaPrincipal
 
 rutaPrincipal.use('/v1/api', rutas);
 
-rutas.use('/librodiario', libroDiarioRuta);
-rutas.use('/usuarios', usuariosRuta); 
-rutas.use('/autorizacion', autorizacionRuta); 
+rutas.use('/librodiario', librodiarioRuta());
+rutas.use('/usuarios', usuariosRuta()); 
+rutas.use('/autorizacion', autorizacionRuta()); 
 
 
 

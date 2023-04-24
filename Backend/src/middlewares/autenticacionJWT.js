@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { claveSecretaJWT } = require('../config');
-module.exports = function () {
-
-    return function (req, res, next) {
+module.exports = function (req, res, next) {
         const token = req.headers['autorizacion'];
         if (!token) {
             const error = new Error('Token inexistente');
@@ -19,4 +17,3 @@ module.exports = function () {
             next();
         })
     }
-}
