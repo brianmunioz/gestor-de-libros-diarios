@@ -9,8 +9,8 @@ class UsuariosServicio {
     async obtenerUsuarios() {
       return _usuariosBDD.obtenerUsuarios();
     } 
-    async buscarUsuarioPorEmail(email){
-      return _usuariosBDD.buscarUsuarioPorEmail(email)
+    async buscarUsuarioPorEmail(email, registro){
+      return _usuariosBDD.buscarUsuarioPorEmail(email,registro)
     }
     async compararContraseñas(pass,hash){
       return  compareSync(pass, hash);
@@ -34,6 +34,11 @@ class UsuariosServicio {
           const error = new Error(verificarPass.error)
             error.status = 401;
             throw error
+        }
+        if(data.id !== req.user){
+          const error = new Error('No estás autorizado para cambiar la contraseña de este usuario')
+          error.status = 401;
+          throw error          
         }
       return  _usuariosBDD.cambiarPassword(data);
   
@@ -59,12 +64,23 @@ class UsuariosServicio {
             error.status = 400;
             throw error     
         }
+        if(data.id !== req.user){
+          const error = new Error('No estás autorizado para editar este usuario')
+          error.status = 401;
+          throw error          
+        }
+        return _usuariosBDD.editarUsuario(data);
     }
     async eliminarUsuario(usuarioID) {  
       if(!usuarioID){
         const error = new Error('Debe ingresar un id para eliminar usuario');
         error.status = 400;
         throw error;
+      }
+      if(usuarioID !== req.user){
+        const error = new Error('No estás autorizado para eliminar a este usuario')
+        error.status = 401;
+        throw error          
       }
       return _usuariosBDD.eliminarUsuario(usuarioID);
     }    

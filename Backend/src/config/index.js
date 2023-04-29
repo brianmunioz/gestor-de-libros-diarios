@@ -5,5 +5,9 @@ module.exports= {
     user: process.env.USUARIOBDD,
     password: process.env.CONTRASENABDD,
     database: process.env.DATABASE,
-    claveSecretaJWT: process.env.KEYJWT
+    claveSecretaJWT: process.env.KEYJWT,
+    rol: {
+        admin: 'admin',
+        user: 'user'
+    }
 }

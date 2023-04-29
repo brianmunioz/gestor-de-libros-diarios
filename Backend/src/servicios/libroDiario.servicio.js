@@ -26,6 +26,11 @@ class LibroDiarioServicio {
       err.status = 401;
       throw err;
     }
+    if(autorID !== req.user){
+      const error = new Error('No estás autorizado para agregar libro diario')
+      error.status = 401;
+      throw error          
+    }
     data.autor = autorID;
     data.fecha_creacion = new Date();
     data.fecha_actualizacion = new Date();
@@ -48,6 +53,11 @@ class LibroDiarioServicio {
     err.status = 401;
     throw err;
    }
+   if(libroDiarioID !== req.user){
+    const error = new Error('No estás autorizado para editar este libro diario')
+    error.status = 401;
+    throw error          
+  }
     data.libroDiarioID = libroDiarioID;
     data.fecha_actualizacion = new Date();
 
@@ -61,7 +71,11 @@ class LibroDiarioServicio {
       err.status = 401;
       throw err;
     }
-
+    if(libroDiarioID !== req.user){
+      const error = new Error('No estás autorizado para eliminar este libro diario')
+      error.status = 401;
+      throw error          
+    }
     return _libroDiarioBB.eliminarLibroDiario(libroDiarioID);
 
   }
@@ -71,7 +85,11 @@ class LibroDiarioServicio {
       err.status = 401;
       throw err;
     } 
-
+    if(libroDiarioID !== req.user){
+      const error = new Error('No estás autorizado para ver los acientos del libro diario')
+      error.status = 401;
+      throw error          
+    }
       return _libroDiarioBB.obtenerAcientos(libroDiarioID);
     
   }
@@ -115,6 +133,11 @@ class LibroDiarioServicio {
       const err = new Error('El campo tipo es obligatorio');
       err.status = 400
       throw err
+    }
+    if(libroDiarioID !== req.user){
+      const error = new Error('No estás autorizado para agregar un aciento')
+      error.status = 401;
+      throw error          
     }
     data.libroDiarioID = libroDiarioID;
 
@@ -162,7 +185,7 @@ class LibroDiarioServicio {
       err.status = 400
       throw err
     }
-
+   
 data.acientoID = acientoID;
     return _libroDiarioBB.editarAciento(data);
 

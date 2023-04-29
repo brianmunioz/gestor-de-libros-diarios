@@ -52,6 +52,7 @@ class AutorizacionServicio {
             const error = new Error('Usuario o contraseña incorrecto');
             error.status = 404;
             throw error;
+
         }
         const validarPass = await _usuarioServicio.compararContraseñas(pass, existeUsuario.pass);
         if (!validarPass) {

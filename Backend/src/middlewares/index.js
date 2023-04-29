@@ -1,5 +1,6 @@
 
 
 module.exports = {
-    AutenticacionJWT: require("./autenticacionJWT")
+    AutenticacionJWT: require("./autenticacionJWT"),
+    cacheMiddleWare: require("./cache.middleware")
 }

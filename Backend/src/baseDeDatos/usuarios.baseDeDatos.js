@@ -28,7 +28,7 @@ class UsuariosBDD {
         if (error) return reject(false);
         if (results.length !== 0) {
           return resolve({
-            existe: true, pass: registro ? results[0].pass : null,
+            existe: true, pass: registro === false ? results[0].pass : null,
             nombre: results[0].nombre,
             apellido: results[0].apellido,
             id: results[0].id,

@@ -3,5 +3,6 @@
 module.exports = {
     encriptarPassword: require('./encriptarPassword'),
     validarPassword: require('./validarPassword'),
-    generarToken: require('./generarToken')
+    generarToken: require('./generarToken'),
+    tiempoCache: require('./cache-tiempo')
 }

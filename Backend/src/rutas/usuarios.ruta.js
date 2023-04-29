@@ -1,11 +1,12 @@
 const {Router} = require('express');
 const {UsuariosControlador} = require('../controladores/index');
-const autenticacionJWT = require('../middlewares/autenticacionJWT');
+const {AutenticacionJWT, cacheMiddleWare} = require('../middlewares/index');
+const cacheTiempo = require('../helpers/cache-tiempo');
 module.exports = function () {
     const router = Router();
-    router.get("/verUsuarios",autenticacionJWT, UsuariosControlador.obtenerUsuarios);
-    router.patch("/editarUsuario", autenticacionJWT, UsuariosControlador.editarUsuario);
-    router.delete("/eliminarUsuario",autenticacionJWT, UsuariosControlador.eliminarUsuario);
-    router.patch("/cambiarPassword",autenticacionJWT, UsuariosControlador.cambiarPassword);
+    router.get("/verUsuarios",[AutenticacionJWT('getUsuarios'),cacheMiddleWare(cacheTiempo.UNA_HORA)], UsuariosControlador.obtenerUsuarios);
+    router.patch("/editarUsuario", [AutenticacionJWT('patchUsuario')], UsuariosControlador.editarUsuario);
+    router.delete("/eliminarUsuario",[AutenticacionJWT('deleteUsuario')], UsuariosControlador.eliminarUsuario);
+    router.patch("/cambiarPassword",[AutenticacionJWT('patchPass')], UsuariosControlador.cambiarPassword);
     return router;
 };
