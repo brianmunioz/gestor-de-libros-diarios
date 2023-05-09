@@ -11,13 +11,15 @@ function Carrusel() {
   return (
     <Carousel activeIndex={index} onSelect={handleSelect} variant="dark">
       <Carousel.Item>
+
         <img
-          className="d-block w-100"
+          className="d-block w-100 bg-opacity-75"
           src="https://e1.pxfuel.com/desktop-wallpaper/594/346/desktop-wallpaper-4-accounting-accounting.jpg"
           alt="First slide"
           height={'500px'}
+          
         />
-    
+
       </Carousel.Item>
       <Carousel.Item>
         <img

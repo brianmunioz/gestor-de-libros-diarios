@@ -1,7 +1,10 @@
 import './App.css';
-import Header from './componentes/Header';
+import Header from './componentes/header/Header';
 import Home from './paginas/Home';
 import {Routes, Route} from 'react-router-dom';
+import Login from './paginas/login/Login';
+import Registro from './paginas/registro/registro';
+import Dashboard from './paginas/dashboard/Dashboard';
 
 function App() {
 
@@ -11,6 +14,10 @@ function App() {
     <div className="container">
     <Routes>
         <Route path='/' element={<Home/>}></Route>
+        <Route path='/login' element={<Login/>}></Route>
+        <Route path='/registro' element={<Registro/>}></Route>    
+        <Route path='/dashboard' element={<Dashboard/>}></Route>        
+    
       </Routes>
     </div>
       

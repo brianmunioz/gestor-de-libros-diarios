@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Carrusel from '../componentes/Carrusel'
+import Carrusel from '../componentes/carrusel/Carrusel'
 import LDTabla from '../componentes/librodiario/LDTabla'
 
 const Home = () => {

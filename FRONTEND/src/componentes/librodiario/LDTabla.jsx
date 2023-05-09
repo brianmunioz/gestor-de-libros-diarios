@@ -18,9 +18,7 @@ const LDTabla = ({datos}) => {
       </thead>
       <tbody>
        
-      {datos.length > 0 &&
-        datos.map(aciento=> <Aciento aciento={aciento}/>)
-      }
+      {datos.length > 0 && datos.map(aciento=> <Aciento aciento={aciento}/>)}
       </tbody>
     </Table>
           )
