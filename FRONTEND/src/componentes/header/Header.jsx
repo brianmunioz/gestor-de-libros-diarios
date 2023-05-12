@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom'
-import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
 function Header() {
+  const token = document.cookie.replace('token=', '');
+  const [estaLogeado, setEstaLogeado] = useState(false);
+
+    useEffect(()=>{
+      if(token) setEstaLogeado(true)
+        },[])
+
+        const cerrarSesion = ()=>{
+          document.cookie = "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/;";
+          window.location = '/';
+
+        }
+
+
   return (
  
     <>
@@ -29,10 +41,15 @@ function Header() {
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link ><Link to="/">Home</Link></Nav.Link>
-                <Nav.Link ><Link to="/login">Iniciar sesion</Link></Nav.Link>
+                {!estaLogeado && <>
+                      <Nav.Link ><Link to="/login">Iniciar sesion</Link></Nav.Link>
 
-                <Nav.Link ><Link to="/registro">Registrarse</Link></Nav.Link>
-                <NavDropdown
+                      <Nav.Link ><Link to="/registro">Registrarse</Link></Nav.Link>
+                      </>
+                }
+          {estaLogeado && 
+          <>
+          <NavDropdown
                   title="Mi cuenta"
                   id={`offcanvasNavbarDropdown-expand-false`}
                 >
@@ -41,7 +58,7 @@ function Header() {
                   <NavDropdown.Divider />
                   <NavDropdown.Item ><Link to="/librosdiariosenlosquetrabajo">Libros diarios en los que trabajo</Link></NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item ><Link to="/cerrarsesion">Cerrar sesion</Link></NavDropdown.Item>
+                  <NavDropdown.Item ><Link to="/cerrarsesion"onClick={cerrarSesion}>Cerrar sesion</Link></NavDropdown.Item>
 
 
                 </NavDropdown>
@@ -54,6 +71,10 @@ function Header() {
                   <NavDropdown.Divider />
                   <NavDropdown.Item ><Link to="/gestionarlibrosdiarios">Gestionar mis libros diarios</Link></NavDropdown.Item>
                 </NavDropdown>
+          </>
+          
+          }
+                
               </Nav>
            
             </Offcanvas.Body>

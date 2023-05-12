@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -22,6 +22,11 @@ const Registro = () => {
   const [mensaje, setMensaje] = useState('');
   const [exito, setExito] = useState(false);
   const navigate = useNavigate();
+  const token = document.cookie.replace('token=', '');
+  useEffect(()=>{
+    if(token) navigate('/')
+
+  },[])
   const mostrarError = (mensajeDeError) => {
     setError(true);
     setMensaje(mensajeDeError);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -11,10 +11,13 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [recordar, setRecordar] = useState('');
-
+  const token = document.cookie.replace('token=', '');
   const [error, setError] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [exito, setExito] = useState(false);
+  useEffect(()=>{
+    if(token) navigate('/');
+  },[])
   const mostrarError = (mensajeDeError) => {
     setError(true);
     setMensaje(mensajeDeError);
@@ -39,9 +42,11 @@ const Login = () => {
     })
       .then(res => {
         if (res.status === 201 || res.status === 200) {
+          document.cookie = `token=${res.data.token}; max-age=${60 * 300}; path=/; samesite=strict`;
+
           setError(false);
           setExito(true);
-          setTimeout(() => { navigate('/dashboard') }, 3000);
+          setTimeout(() => { window.location = '/' }, 3000);
         }
       })
       .catch((err) => {

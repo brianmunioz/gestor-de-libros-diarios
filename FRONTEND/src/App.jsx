@@ -5,6 +5,7 @@ import {Routes, Route} from 'react-router-dom';
 import Login from './paginas/login/Login';
 import Registro from './paginas/registro/registro';
 import Dashboard from './paginas/dashboard/Dashboard';
+import MisLibrosDiarios from './paginas/libros diarios/MisLibrosDiarios';
 
 function App() {
 
@@ -16,7 +17,9 @@ function App() {
         <Route path='/' element={<Home/>}></Route>
         <Route path='/login' element={<Login/>}></Route>
         <Route path='/registro' element={<Registro/>}></Route>    
-        <Route path='/dashboard' element={<Dashboard/>}></Route>        
+        <Route path='/dashboard' element={<Dashboard/>}></Route>     
+        <Route path='/mislibrosdiarios' element={<MisLibrosDiarios/>}></Route>        
+   
     
       </Routes>
     </div>
