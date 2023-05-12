@@ -7,6 +7,9 @@ class LibroDiarioServicio {
   async obtenerLibrosDiarios() {
     return _libroDiarioBB.obtenerLibrosDiarios();
   }
+  async obtenerLibrosDiariosUsuario(id){
+    return _libroDiarioBB.obtenerLibrosDiariosUsuario(id);
+  }
   async agregarLibroDiario(data, autorID){
     if(!data){
       const err = new Error('Debe ingresar los datos para que se pueda subir el aciento al libro diario');

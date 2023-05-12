@@ -15,12 +15,8 @@ return (req, res, next)=>{
             error.status = 401;
             throw error;
         }
-        // if((rol.admin !== decodedToken.user )&& (accion === 'getLD' || accion === 'getUsuarios')){              
-        //         const error = new Error('Usted no  está habilitado para realizar esta acción');
-        //         error.status = 401;
-        //         throw error;
-        //     }
-        req.user = decodedToken.usuario.id;         
+    
+        req.headers.user = decodedToken.usuario.id;         
         next();
     })
 }

@@ -13,6 +13,14 @@ class LibroDiarioBDD {
       });
     });
   }
+  async obtenerLibrosDiariosUsuario(id) {
+    return new Promise((resolve, reject) => {
+      _conn.query('SELECT * FROM libros_diarios where autor = ?',[id], (error, results, fields) => {
+        if (error) return reject(error);
+        return resolve(results);
+      });
+    });
+  }
   async agregarLibroDiario(data) {
     return new Promise((resolve, reject) => {
       _conn.query(`INSERT INTO libros_diarios (id, nombre, fecha_creacion,fecha_actualizacion, autor) VALUES (NULL, ? , ? , ? , ? )`, [data.nombre, data.fecha_creacion, data.fecha_actualizacion, data.autor], (error, results, fields) => {

@@ -7,14 +7,10 @@ class AutorizacionServicio {
     constructor() {
         _usuarioServicio = new UsuarioServicio;
     }
-    async registrar(usuario) {       
+    async registrar(usuario) {    
         const regPatternEmail = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/;
         const verificarPass = validarPassword(usuario.pass);
-        if(!usuario){
-            const error = new Error('Es obligatorio enviar datos')
-            error.status = 400;
-            throw error
-        }else if(!usuario.nombre || !isNaN(usuario.nombre)){
+      if(!usuario.nombre || !isNaN(usuario.nombre)){
             const error = new Error('Debe ingresar un nombre válido')
             error.status = 400;
             throw error
@@ -22,8 +18,12 @@ class AutorizacionServicio {
             const error = new Error('Debe ingresar un apellido válido')
             error.status = 400;
             throw error
-        }else if (usuario.fecha_nacimiento.match(regPatternEmail) === false  && (!usuario.email)) {
+        }else if (usuario.email.match(regPatternEmail) === false  && (!usuario.email)) {
             const error = new Error('Debe ingresar un email válido')
+            error.status = 400;
+            throw error     
+        }else if(!usuario.fecha_nacimiento ){
+            const error = new Error('Debe ingresar una fecha de nacimiento válida')
             error.status = 400;
             throw error     
         }else if(verificarPass.esValido === false  ){
@@ -33,7 +33,7 @@ class AutorizacionServicio {
         }
         const existeUsuario = await _usuarioServicio.buscarUsuarioPorEmail(usuario.email,true); 
         if (existeUsuario.existe) {
-            const error = new Error('El email usado ya está en uso');
+            const error = new Error('El email ingresado ya está en uso');
             error.status = 400;
             throw error;
         }
@@ -41,6 +41,7 @@ class AutorizacionServicio {
         usuario.fecha_creacion = new Date();
         usuario.fecha_actualizacion = new Date();
         usuario.registrado_desde = new Date();
+        
         usuario.pass = encriptarPassword(usuario.pass);
         return await _usuarioServicio.agregarUsuario(usuario);
     }

@@ -9,6 +9,12 @@ class LibroDiarioControlador{
         const respuesta = await _libroDiarioServicio.obtenerLibrosDiarios();
         return res.json(respuesta)
     }
+    async obtenerLibrosDiariosUsuario(req, res) {
+        const {user} = req.headers
+        const respuesta = await _libroDiarioServicio.obtenerLibrosDiariosUsuario(user);
+        return res.json(respuesta)
+    }
+    
     async agregarLibroDiario(req, res) {
         const {body} = req;
         const {user} = req.headers
