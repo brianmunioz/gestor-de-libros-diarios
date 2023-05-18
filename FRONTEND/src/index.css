@@ -2,3 +2,13 @@ a{
     text-decoration: none;
     color: black;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Bruno+Ace+SC&family=Koulen&display=swap');
+
+h1{
+    font-family: 'Bruno Ace SC', cursive;
+}
+button{
+    font-family: 'Koulen', cursive
+
+}

@@ -1,14 +1,15 @@
 import React from 'react'
 import { Card, Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
-const MiniCard = () => {
+const MiniCard = ({ titulo, id }) => {
   return (
     <Card className='mb-3 border rounded'>
-    <Card.Body className='bg-dark rounded'>
-      <Card.Title className='text-light'>Special title treatment</Card.Title>        
-      <Button variant="outline-light">Ir al libro diario</Button>
-    </Card.Body>
-  </Card>  )
+      <Card.Body className='bg-dark rounded'>
+        <Card.Title className='text-light'>{titulo}</Card.Title>
+        <Button variant="secondary" ><Link className='text-white' to={'/librodiario/' + id}>Abrir</Link></Button>
+      </Card.Body>
+    </Card>)
 }
 
 export default MiniCard
