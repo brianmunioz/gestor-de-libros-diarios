@@ -61,7 +61,7 @@ class LibroDiarioBDD {
   async agregarAciento(data) {
 
     return new Promise((resolve, reject) => {
-      _conn.query(`INSERT INTO acientos (id, variacion_patrimonial, cuenta, fecha, autor, libro_diario, monto, tipo) VALUES (NULL, ? , ? , ? , ? , ? , ? , ?)`,[data.vp, data.cuenta, data.fecha, data.autor,data.libroDiarioID, data.monto,data.tipo], (error, results, fields) => {
+      _conn.query(`INSERT INTO acientos (id, variacion_patrimonial, cuenta, fecha, autor, libro_diario, monto, tipo,operacion) VALUES (NULL, ? , ? , ? , ? , ? , ? , ?,?)`,[data.vp, data.cuenta, data.fecha, data.autor,data.libroDiarioID, data.monto,data.tipo,data.operacion], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });

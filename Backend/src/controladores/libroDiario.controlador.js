@@ -51,10 +51,10 @@ class LibroDiarioControlador{
     }
     async agregarAciento(req, res) {
         const { libroDiarioID } = req.params;
-        // const {user} = req.headers
+        const {user} = req.headers
 
         const {body} = req;
-        const respuesta = await _libroDiarioServicio.agregarAciento(body, libroDiarioID);        
+        const respuesta = await _libroDiarioServicio.agregarAciento(body, libroDiarioID,user);        
         return res.status(201).json(respuesta)
     }
     async editarAciento(req, res) {

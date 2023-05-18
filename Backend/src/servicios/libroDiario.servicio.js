@@ -24,15 +24,6 @@ class LibroDiarioServicio {
       const err = new Error('Usted no está autorizado');
       err.status = 401;
       throw err;
-    }else if(isNaN(autorID)){
-      const err = new Error('Usuario no autorizado');
-      err.status = 401;
-      throw err;
-    }
-    if(autorID !== req.user){
-      const error = new Error('No estás autorizado para agregar libro diario')
-      error.status = 401;
-      throw error          
     }
     data.autor = autorID;
     data.fecha_creacion = new Date();
@@ -88,16 +79,12 @@ class LibroDiarioServicio {
       err.status = 401;
       throw err;
     } 
-    if(libroDiarioID !== req.user){
-      const error = new Error('No estás autorizado para ver los acientos del libro diario')
-      error.status = 401;
-      throw error          
-    }
+   
       return _libroDiarioBB.obtenerAcientos(libroDiarioID);
     
   }
 
-  async agregarAciento(data, libroDiarioID){
+  async agregarAciento(data, libroDiarioID, usuario){
     if(!data){
       const err = new Error('Debe ingresar los datos para que se pueda subir el aciento al libro diario');
       err.status = 400
@@ -137,12 +124,10 @@ class LibroDiarioServicio {
       err.status = 400
       throw err
     }
-    if(libroDiarioID !== req.user){
-      const error = new Error('No estás autorizado para agregar un aciento')
-      error.status = 401;
-      throw error          
-    }
+    
     data.libroDiarioID = libroDiarioID;
+    data.autor = usuario
+    data.operacion = 1; //change this field
 
     return _libroDiarioBB.agregarAciento(data);
 
