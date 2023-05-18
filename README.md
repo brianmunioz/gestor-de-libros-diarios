@@ -1,7 +1,7 @@
 
-## Relaciones de la base de datos
+## Screenshots
 
-![App Screenshot](https://cdn.dribbble.com/userupload/5798863/file/original-76b5df8727762ce05677ca9e21c9574d.jpg?compress=1&resize=600x499)
+![App Screenshot](https://github.com/brianmunioz/gestor-de-libros-diarios/blob/master/screenshots/SCREENSHOT%201.jpg)
 
 
 ## Rutas de la API
