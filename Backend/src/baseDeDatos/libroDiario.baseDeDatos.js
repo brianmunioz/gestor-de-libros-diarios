@@ -51,7 +51,7 @@ class LibroDiarioBDD {
 //acientos contables
   async obtenerAcientos(libroDiarioID) {
     return new Promise((resolve, reject) => {
-      _conn.query(`SELECT * FROM acientos WHERE libro_diario= ?`,[libroDiarioID], (error, results, fields) => {
+      _conn.query(`SELECT acientos.* , usuarios.nombre, usuarios.apellido, operacion.descripcion FROM acientos INNER JOIN usuarios ON usuarios.id = acientos.autor INNER JOIN operacion WHERE acientos.libro_diario= ?`,[libroDiarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
