@@ -20,7 +20,7 @@ if(fin){
 }else{
   return (
     <tr style={{backgroundColor: colorCeldas}}>
-      <td >{formatearFecha(new Date(aciento.fecha))}</td>
+      <td >{formatearFecha(aciento.fecha)}</td>
       <td >{aciento.cuenta}</td>
       <td >{aciento.variacion_patrimonial}</td>
       {

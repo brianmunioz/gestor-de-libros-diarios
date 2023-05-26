@@ -15,8 +15,8 @@ const LDTabla = ({ datos, id }) => {
   const [VP, setVP] = useState('');
   const [error, setError] = useState('');
 
-  const [debe, setDebe] = useState(null);
-  const [haber, setHaber] = useState(null);
+  const [debe, setDebe] = useState('');
+  const [haber, setHaber] = useState('');
   const [tipo, setTipo] = useState('');
   const [nuevosArreglos, setNuevosArreglos] = useState([]);
   const [nuevaOperacion,setNuevaOperacion] = useState('');
@@ -46,7 +46,7 @@ const LDTabla = ({ datos, id }) => {
       variacion_patrimonial: VP,
       operacion: operacion_ ,
       tipo,
-      libro_diario: 50
+      libro_diario: id
     }
     let arregloDeAcientos = [];
     if(localStorage.getItem('Acientos')) arregloDeAcientos.push(...JSON.parse(localStorage.getItem('Acientos')))
@@ -55,23 +55,7 @@ const LDTabla = ({ datos, id }) => {
     setNuevosArreglos(acientosDelLibroDiarioActual)
     localStorage.setItem('Acientos',JSON.stringify(arregloDeAcientos));
     console.log(arregloDeAcientos.filter(aciento =>{return  aciento.libro_diario === id}))
-    // axios.post(config.APIURL_DESARROLLO + '/librodiario/agregarAciento/' + id, {
-    //   
-    //   cuenta,
-    //   monto,
-    //   vp: VP,
-    //   operacion: 1,
-    //   tipo
-
-    // }, {
-    //   headers: {
-    //     autorizacion: token
-    //   }
-    // })
-    //   .then(res => { console.log(res) })
-    //   .catch(err => {
-    //     console.log(err.response.data)
-    //   })
+   
   }
   const verificarCuenta = (cuenta) => {
     const verificarCuenta = validacionCuentas(cuenta);
@@ -109,7 +93,7 @@ setError('');
       <tbody >
 
         {datos.length > 0 && datos.map(aciento => <Aciento aciento={aciento}  />)}
-        {nuevosArreglos && nuevosArreglos.map(aciento=>{return <Aciento aciento={aciento} color={'#ff7e00'}/> })}
+        {nuevosArreglos.length >0 && nuevosArreglos.map(aciento=>{return <Aciento aciento={aciento} color={'#ff7e00'}/> })}
         <tr>
           <td>{formatearFecha(new Date())}</td>
           <td > <select name="select"  data-show-subtext="true" data-live-search="true" onChange={(e) => {
@@ -138,15 +122,13 @@ setError('');
             <td><input type="number" disabled /></td>
           }
 
-
-
           <td><input type="text" value={tipo} onChange={(e) => { setTipo(e.target.value) }} /></td>
           <td>{localStorage.getItem('user')}</td>
           <td><Button onClick={agregarAciento}>Add</Button></td>
         </tr>
+        {error && <tr colspan="8"><td colspan="8" className='text-center bg-danger text-light p-2' >{error}</td></tr> }
       </tbody>
-{error && <tr colspan="8"><td colspan="8" className='text-center bg-danger text-light p-2' >{error}</td></tr>
- }
+
     </Table>
   )
 }
