@@ -47,6 +47,16 @@ class LibroDiarioBDD {
       });
     });
   }
+  //operaciones 
+  async agregarOperacion(data) {
+
+    return new Promise((resolve, reject) => {
+      _conn.query(`INSERT INTO operaciones (id, descripcion, libro_diario) VALUES (NULL, ? , ? )`,[ data.autor,data.libroDiarioID], (error, results, fields) => {
+        if (error) return reject(error);
+        return resolve(results);
+      });
+    });
+  }
 
 //acientos contables
   async obtenerAcientos(libroDiarioID) {

@@ -24,7 +24,6 @@ class LibroDiarioControlador{
     async editarLibroDiario(req, res) {
         const {libroDiarioID } = req.params;
         const {body} = req;
-        console.log(user)
         const respuesta = await _libroDiarioServicio.editarLibroDiario(body,libroDiarioID);
         if(respuesta.affectedRows > 0){
             respuesta.status = 200;
@@ -42,6 +41,13 @@ class LibroDiarioControlador{
         
         return res.status(200).json(respuesta)
     }
+    //operaciones
+    async agregarOperacion(req, res) {
+        const { libroDiarioID } = req.params;
+        const {body} = req;
+        const respuesta = await _libroDiarioServicio.agregarOperacion(body, libroDiarioID);        
+        return res.status(201).json(respuesta)
+    }
 
     //acientos
     async obtenerAcientos(req, res) {
@@ -57,16 +63,7 @@ class LibroDiarioControlador{
         const respuesta = await _libroDiarioServicio.agregarAciento(body, libroDiarioID,user);        
         return res.status(201).json(respuesta)
     }
-    async editarAciento(req, res) {
-        const { acientoID } = req.params;
-        const {body} = req;
-        const respuesta = await _libroDiarioServicio.editarAciento(body, acientoID);  
-        if(respuesta.affectedRows > 0){
-            respuesta.status = 200;
-            respuesta.mensaje = 'Aciento editado!';
-            }      
-        return res.status(200).json(respuesta)
-    }
+   
     async eliminarAciento(req, res) {
         const { acientoID } = req.params;
         const respuesta = await _libroDiarioServicio.eliminarAciento(acientoID);

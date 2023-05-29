@@ -13,8 +13,8 @@ module.exports = function (){
     router.delete("/eliminarLibroDiario/:libroDiarioID",[AutenticacionJWT('deleteLD')], LibroDiarioControlador.eliminarLibroDiario);
     router.get('/verAcientos/:libroDiarioID',[AutenticacionJWT('getAcientos'),cacheMiddleWare(cacheTiempo.UNA_HORA)],LibroDiarioControlador.obtenerAcientos)
     router.post('/agregarAciento/:libroDiarioID',[AutenticacionJWT('postAciento')],LibroDiarioControlador.agregarAciento)
-    router.patch('/editar/:acientoID',[AutenticacionJWT('patchAciento')],LibroDiarioControlador.editarAciento)
     router.delete("/eliminarAciento/:acientoID", [AutenticacionJWT('deleteAciento')],LibroDiarioControlador.eliminarAciento);
+    router.post('/agregaroperacion/:libroDiarioID',[AutenticacionJWT('postOperacion')],LibroDiarioControlador.agregarOperacion)
 
 
     return router;

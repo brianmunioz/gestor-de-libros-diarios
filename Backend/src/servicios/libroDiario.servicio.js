@@ -84,23 +84,33 @@ class LibroDiarioServicio {
     
   }
 
+    //operaciones 
+    async agregarOperacion(data, libroDiarioID){
+      if(!libroDiarioID|| isNaN(libroDiarioID)){
+         const err = new Error('Debe ingresar un identificador del libro diario que sea válido');
+         err.status = 400
+         throw err
+       }
+      if(!data.descripcion){
+         const err = new Error('Debe completar la descripcion de la operación');
+         err.status = 400
+         throw err
+       }
+       
+       data.libroDiarioID = libroDiarioID;
+   
+       return _libroDiarioBB.agregarOperacion(data);
+   
+     }
+
   async agregarAciento(data, libroDiarioID, usuario){
-    if(!data){
-      const err = new Error('Debe ingresar los datos para que se pueda subir el aciento al libro diario');
-      err.status = 400
-      throw err
-    }else if(!data.vp){
+   if(!data.vp){
       const err = new Error('El campo variación patrimonial es obligatorio');
       err.status = 400
       throw err
     }
     else if(!data.cuenta){
       const err = new Error('El campo cuenta es obligatorio');
-      err.status = 400
-      throw err
-    }
-    else if(!data.fecha){
-      const err = new Error('El campo fecha es obligatorio');
       err.status = 400
       throw err
     }
@@ -123,61 +133,20 @@ class LibroDiarioServicio {
       const err = new Error('El campo tipo es obligatorio');
       err.status = 400
       throw err
+    }else if(!data.operacion){
+      const err = new Error('Debe indicar a que operación pertenece el aciento');
+      err.status = 400
+      throw err
     }
-    
+    data.fecha = new Date()
     data.libroDiarioID = libroDiarioID;
     data.autor = usuario
-    data.operacion = 1; //change this field
 
     return _libroDiarioBB.agregarAciento(data);
 
   }
 
-  async editarAciento(data,acientoID){
-    if(!data){
-      const err = new Error('Debe ingresar los datos para que se pueda subir el aciento al libro diario');
-      err.status = 400
-      throw err
-    }else if(!data.vp){
-      const err = new Error('El campo variación patrimonial es obligatorio');
-      err.status = 400
-      throw err
-    }
-    else if(!data.cuenta){
-      const err = new Error('El campo cuenta es obligatorio');
-      err.status = 400
-      throw err
-    }
-    else if(!data.fecha){
-      const err = new Error('El campo fecha es obligatorio');
-      err.status = 400
-      throw err
-    }
-    else if(!data.librodiario_id){
-      const err = new Error('Debe ingresar el id del libro diario');
-      err.status = 400
-      throw err
-    }
-    else if(!data.monto){
-      const err = new Error('El campo monto es obligatorio');
-      err.status = 400
-      throw err
-    }
-    else if(isNaN(data.monto)){
-      const err = new Error('El campo monto debe ser un número');
-      err.status = 400
-      throw err
-    }
-    else if(!data.tipo){
-      const err = new Error('El campo tipo es obligatorio');
-      err.status = 400
-      throw err
-    }
-   
-data.acientoID = acientoID;
-    return _libroDiarioBB.editarAciento(data);
-
-  }
+  
   async eliminarAciento( acientoID){
    
     if(!acientoID){
