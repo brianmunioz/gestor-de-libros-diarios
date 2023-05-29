@@ -51,7 +51,7 @@ class LibroDiarioBDD {
   async agregarOperacion(data) {
 
     return new Promise((resolve, reject) => {
-      _conn.query(`INSERT INTO operaciones (id, descripcion, libro_diario) VALUES (NULL, ? , ? )`,[ data.autor,data.libroDiarioID], (error, results, fields) => {
+      _conn.query(`INSERT INTO operacion (id, descripcion, libro_diario) VALUES (NULL, ? , ? )`,[ data.autor,data.libroDiarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
