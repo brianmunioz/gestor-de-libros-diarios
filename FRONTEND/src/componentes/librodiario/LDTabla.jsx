@@ -8,9 +8,7 @@ import { todasLasCuentas } from '../../helpers/todasLasCuentas';
 import { variacionesPatrimoniales } from '../../helpers/variacionesPatrimoniales';
 import { formatearFecha } from '../../helpers/formatearFecha';
 
-const LDTabla = ({ datos, id }) => {
-  
-  const [fecha, setFecha] = useState('');
+const LDTabla = ({ datos, id, editar }) => {
   const [cuenta, setCuenta] = useState('mercaderías');
   const [VP, setVP] = useState('');
   const [error, setError] = useState('');
@@ -22,7 +20,7 @@ const LDTabla = ({ datos, id }) => {
   const [nuevaOperacion,setNuevaOperacion] = useState('');
   const token = document.cookie.replace('token=', '');
   useEffect(()=>{
-    if(localStorage.getItem('Acientos')) setNuevosArreglos(JSON.parse(localStorage.getItem('Acientos')).filter(aciento =>{return  aciento.libro_diario === id}))
+    if(sessionStorage.getItem('acientos_'+id)) setNuevosArreglos(JSON.parse(sessionStorage.getItem('acientos_'+id)))
   },[])
   const agregarAciento = () => {
     if((!haber && !debe) || (haber <=0 && debe <= 0)){
@@ -37,25 +35,19 @@ const LDTabla = ({ datos, id }) => {
       return
     }
     setError('');
-    const operacion_ = 2;
     const monto = haber ? haber : debe;
     const nuevoAciento = {
       fecha: new Date(),
       cuenta,      
       monto,
       variacion_patrimonial: VP,
-      operacion: operacion_ ,
-      tipo,
-      libro_diario: id
+      tipo
     }
     let arregloDeAcientos = [];
-    if(localStorage.getItem('Acientos')) arregloDeAcientos.push(...JSON.parse(localStorage.getItem('Acientos')))
+    if(sessionStorage.getItem('acientos_'+id)) arregloDeAcientos.push(...JSON.parse(sessionStorage.getItem('acientos_'+id)))
     arregloDeAcientos.push(nuevoAciento);
-    const acientosDelLibroDiarioActual = arregloDeAcientos.filter(aciento =>{return  aciento.libro_diario === id});
-    setNuevosArreglos(acientosDelLibroDiarioActual)
-    localStorage.setItem('Acientos',JSON.stringify(arregloDeAcientos));
-    console.log(arregloDeAcientos.filter(aciento =>{return  aciento.libro_diario === id}))
-   
+    setNuevosArreglos(arregloDeAcientos)
+    sessionStorage.setItem('acientos_'+id,JSON.stringify(arregloDeAcientos));   
   }
   const verificarCuenta = (cuenta) => {
     const verificarCuenta = validacionCuentas(cuenta);
@@ -74,7 +66,7 @@ const LDTabla = ({ datos, id }) => {
 setError('');
     },5000)
   }
- 
+ console.log(datos)
 
   return (
     <Table striped bordered hover>
@@ -94,38 +86,39 @@ setError('');
 
         {datos.length > 0 && datos.map(aciento => <Aciento aciento={aciento}  />)}
         {nuevosArreglos.length >0 && nuevosArreglos.map(aciento=>{return <Aciento aciento={aciento} color={'#ff7e00'}/> })}
+        {editar && 
         <tr>
-          <td>{formatearFecha(new Date())}</td>
-          <td > <select name="select"  data-show-subtext="true" data-live-search="true" onChange={(e) => {
-            setCuenta(e.target.value);
-            verificarCuenta(e.target.value);
-          }} >
-            {
-              todasLasCuentas.map(cuenta => <option value={cuenta} key={cuenta} >{cuenta}</option>
-              )
-            }
-
-          </select> </td>
-          <td> {VP} </td>
-
-          {!haber ? <td><input type="number" value={debe} onChange={(e) => {
-            setHaber('');
-            setDebe(e.target.value);
-            verificarCuenta(cuenta)
-          }} /></td> :
-            <td><input type="number" disabled /></td>}
-          {!debe ? <td><input type="number" value={haber} onChange={async (e) => {
-            setDebe('');
-            setHaber(e.target.value);
-            verificarCuenta(cuenta);
-          }} /></td> :
-            <td><input type="number" disabled /></td>
+        <td>{formatearFecha(new Date())}</td>
+        <td > <select name="select"  data-show-subtext="true" data-live-search="true" onChange={(e) => {
+          setCuenta(e.target.value);
+          verificarCuenta(e.target.value);
+        }} >
+          {
+            todasLasCuentas.map(cuenta => <option value={cuenta} key={cuenta} >{cuenta}</option>
+            )
           }
 
-          <td><input type="text" value={tipo} onChange={(e) => { setTipo(e.target.value) }} /></td>
-          <td>{localStorage.getItem('user')}</td>
-          <td><Button onClick={agregarAciento}>Add</Button></td>
-        </tr>
+        </select> </td>
+        <td> {VP} </td>
+
+        {!haber ? <td><input type="number" value={debe} onChange={(e) => {
+          setHaber('');
+          setDebe(e.target.value);
+          verificarCuenta(cuenta)
+        }} /></td> :
+          <td><input type="number" disabled /></td>}
+        {!debe ? <td><input type="number" value={haber} onChange={async (e) => {
+          setDebe('');
+          setHaber(e.target.value);
+          verificarCuenta(cuenta);
+        }} /></td> :
+          <td><input type="number" disabled /></td>
+        }
+
+        <td><input type="text" value={tipo} onChange={(e) => { setTipo(e.target.value) }} /></td>
+        <td>{sessionStorage.getItem('user')}</td>
+        <td><Button variant='outline-dark'onClick={agregarAciento}>Add</Button></td>
+      </tr>}
         {error && <tr colspan="8"><td colspan="8" className='text-center bg-danger text-light p-2' >{error}</td></tr> }
       </tbody>
 

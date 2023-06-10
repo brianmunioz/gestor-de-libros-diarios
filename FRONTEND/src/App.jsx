@@ -8,6 +8,7 @@ import Dashboard from './paginas/dashboard/Dashboard';
 import MisLibrosDiarios from './paginas/libros diarios/MisLibrosDiarios';
 import LibroDiario from './paginas/libros diarios/LibroDiario';
 import AgregarLibroDiario from './paginas/libros diarios/AgregarLibroDiario';
+import LibroMayor from './paginas/libro mayor/LibroMayor';
 
 function App() {
 
@@ -23,6 +24,8 @@ function App() {
         <Route path='/mislibrosdiarios' element={<MisLibrosDiarios/>}></Route>      
         <Route path='/librodiario/:ID' element={<LibroDiario/>}></Route> 
         <Route path='/agregarLD' element={<AgregarLibroDiario/>}></Route> 
+        <Route path='/librodiario/:ID/mayor/:cuenta' element={<LibroMayor/>}></Route> 
+
 
 
   

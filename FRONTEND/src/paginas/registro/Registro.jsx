@@ -143,13 +143,13 @@ const Registro = () => {
         <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => { setPassword(e.target.value) }} />
 
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicPassword">
+      <Form.Group className="mb-3" controlId="formBasicPassword2">
         <Form.Label>Confirmar password</Form.Label>
         <Form.Control type="password" placeholder="Confirmar password" value={password2} onChange={(e) => { setPassword2(e.target.value) }} />
 
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check type="checkbox" label="Acepto términos y condiciones" value={checkTYC} onClick={() => { setCheckTYC(!checkTYC) }} />
+        <Form.Check type="checkbox"  label="Acepto términos y condiciones" value={checkTYC} onClick={() => { setCheckTYC(!checkTYC) }}  />
       </Form.Group>
       {error && <Alert variant='danger' mt-5 mb-5>{mensaje}</Alert>}
       {exito && <Alert variant='success' mt-5 mb-5>Su usuario a sido creado, ahora puede usar su cuenta, será redirigido al login...</Alert>}
