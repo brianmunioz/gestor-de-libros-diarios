@@ -52,13 +52,12 @@ class LibroDiarioControlador{
     //acientos
     async obtenerAcientos(req, res) {
         const {libroDiarioID} = req.params; 
-        const respuesta = await _libroDiarioServicio.obtenerAcientos(libroDiarioID);        
-        return res.json(respuesta)
+        const respuesta = await _libroDiarioServicio.obtenerAcientos(libroDiarioID);         
+        return res.json(  respuesta  )
     }
     async agregarAciento(req, res) {
         const { libroDiarioID } = req.params;
-        const {user} = req.headers
-
+        const {user} = req.headers;
         const {body} = req;
         const respuesta = await _libroDiarioServicio.agregarAciento(body, libroDiarioID,user);        
         return res.status(201).json(respuesta)

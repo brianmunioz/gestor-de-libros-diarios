@@ -51,7 +51,7 @@ class LibroDiarioBDD {
   async agregarOperacion(data) {
 
     return new Promise((resolve, reject) => {
-      _conn.query(`INSERT INTO operacion (id, descripcion, libro_diario) VALUES (NULL, ? , ? )`,[ data.autor,data.libroDiarioID], (error, results, fields) => {
+      _conn.query(`INSERT INTO operacion (id, descripcion, libro_diario) VALUES (NULL, ? , ? )`,[ data.descripcion,data.libroDiarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
@@ -61,7 +61,11 @@ class LibroDiarioBDD {
 //acientos contables
   async obtenerAcientos(libroDiarioID) {
     return new Promise((resolve, reject) => {
-      _conn.query(`SELECT acientos.* , usuarios.nombre, usuarios.apellido, operacion.descripcion FROM acientos INNER JOIN usuarios ON usuarios.id = acientos.autor INNER JOIN operacion WHERE acientos.libro_diario= ?`,[libroDiarioID], (error, results, fields) => {
+      _conn.query(`SELECT acientos.*, usuarios.nombre, usuarios.apellido, operacion.descripcion
+      FROM acientos
+      INNER JOIN usuarios ON usuarios.id = acientos.autor
+      INNER JOIN operacion ON acientos.libro_diario = operacion.libro_diario AND acientos.operacion = operacion.id
+      WHERE acientos.libro_diario = 10`,[libroDiarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
