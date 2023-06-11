@@ -43,7 +43,7 @@ const Login = () => {
       .then(res => {
         if (res.status === 201 || res.status === 200) {
           document.cookie = `token=${res.data.token}; max-age=${60 * 300}; path=/; samesite=strict`;
-          localStorage.setItem('user',res.data.usuario.nombre+' '+res.data.usuario.apellido);
+          sessionStorage.setItem('user',res.data.usuario.nombre+' '+res.data.usuario.apellido);
 
           setError(false);
           setExito(true);

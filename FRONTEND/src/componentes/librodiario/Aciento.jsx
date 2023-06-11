@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { formatearFecha } from '../../helpers/formatearFecha';
-
+import { variacionesPatrimoniales } from '../../helpers/variacionesPatrimoniales';
 const Aciento = ({ aciento, color }) => {
   const [debe, setDebe] = useState(false);
   const [fin,setFin] = useState(false);
   
   useEffect(() => {
     if(aciento.descripcion_operacion) setFin(true)
-    if (aciento.variacion_patrimonial === 'PN' ||
-      aciento.variacion_patrimonial === 'A+') {
+    const esDebe =variacionesPatrimoniales.debe.some((vp)=>aciento.variacion_patrimonial === vp)
+
+    if (esDebe) {
       setDebe(true);
     }
   }, []);
@@ -23,16 +24,9 @@ if(fin){
       <td >{formatearFecha(aciento.fecha)}</td>
       <td >{aciento.cuenta}</td>
       <td >{aciento.variacion_patrimonial}</td>
-      {
-        debe === true ?
-          <>
-            <td >{aciento.monto}</td>
-            <td ></td>
-          </> : <>
-            <td ></td>
-            <td >{aciento.monto}</td>
-          </>
-      }
+   
+            <td >{debe?aciento.monto:''}</td>
+            <td >{!debe?aciento.monto:''}</td>
       <td >{aciento.tipo}</td>
       <td >{aciento.autor}</td>
       <td >{aciento.operacion}</td>

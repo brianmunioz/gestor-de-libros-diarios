@@ -6,6 +6,7 @@ import axios from "axios";
 import { todasLasCuentas } from "../../helpers/todasLasCuentas";
 import { variacionesPatrimoniales } from "../../helpers/variacionesPatrimoniales";
 import LDTabla from "../../componentes/librodiario/LDTabla";
+import LibroMayor from "../../componentes/librodiario/LibroMayor"
 
 const LibroDiario = () => {
   const { ID } = useParams();
@@ -15,8 +16,13 @@ const LibroDiario = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [descripcionOperacion, setDescripcionOperacion] = useState("");
   const [mensajeOperacion, setMensajeOperacion] = useState("");
-  const [modal, setModal] = useState(false)
-  const puedeEditar = sessionStorage.getItem('operacion_'+ID)? true: false;
+  const [modal, setModal] = useState(false);
+  const [mayor, setMayor] = useState(false);
+  const [trabajando, setTrabajando] = useState(sessionStorage.getItem('operacion_'+ID)? true : false)
+  const [sumassaldos, setSumassaldos] = useState(false);
+  const [cuentaMayor, setCuentaMayor] = useState('MERCADERÍAS');
+
+  let puedeEditar = sessionStorage.getItem("operacion_" + ID) ? true : false;
   const obtenerAcientos = () => {
     axios
       .get(config.APIURL_DESARROLLO + "/librodiario/verAcientos/" + ID, {
@@ -29,11 +35,11 @@ const LibroDiario = () => {
           //1-obtener todas las operaciones
           return element.operacion;
         });
-        
+
         const cantidadOperaciones = new Set(arregloOperaciones); //2-Eliminar elementos repetidos
         const totalOperaciones = [...cantidadOperaciones]; //Con un formato mejor...
         let arregloAMostrar = []; //En este arreglo se mostraran los datos en forma ordenada
-        for (let i = 0; i < totalOperaciones.length  ; i++) {
+        for (let i = 0; i < totalOperaciones.length; i++) {
           //3-Ordenar los debes y haberes de cada operacion
           //4-Dividimos las cuentas del debe y del haber
           let descripcion_operacion;
@@ -41,22 +47,22 @@ const LibroDiario = () => {
             const esDebe = variacionesPatrimoniales.debe.some(
               (vp) => vp === element.variacion_patrimonial
             );
-            return (element.operacion === totalOperaciones[i]) && esDebe;
+            return element.operacion === totalOperaciones[i] && esDebe;
           });
           const cuentasHaber = res.data.filter((element) => {
             const esHaber = variacionesPatrimoniales.haber.some(
               (vp) => vp === element.variacion_patrimonial
             );
-            return (element.operacion === totalOperaciones[i]) && esHaber;
+            return element.operacion === totalOperaciones[i] && esHaber;
           });
-          descripcion_operacion = cuentasDebe[0].descripcion
-          
-             //5- agregamos los arreglos en nuestro arreglo final
+          descripcion_operacion = cuentasDebe[0].descripcion;
+
+          //5- agregamos los arreglos en nuestro arreglo final
           // y al final de la iteracion se guardaran los arreglos de forma que se ordenen por operacion y primero debe y luego haber de cada operación
           arregloAMostrar.push(...cuentasDebe);
           arregloAMostrar.push(...cuentasHaber);
-          arregloAMostrar.push({ descripcion_operacion });          
-        }     
+          arregloAMostrar.push({ descripcion_operacion });
+        }
         setDatos(arregloAMostrar);
       })
       .catch((err) => {
@@ -75,7 +81,7 @@ const LibroDiario = () => {
         (vp) => vp === element.variacion_patrimonial
       );
       if (esDebe) {
-        total += parseInt(element.monto) ;
+        total += parseInt(element.monto);
         return element;
       }
     });
@@ -88,7 +94,7 @@ const LibroDiario = () => {
         (vp) => vp === element.variacion_patrimonial
       );
       if (esHaber) {
-        total += parseInt(element.monto) ;
+        total += parseInt(element.monto);
         return element;
       }
     });
@@ -100,27 +106,45 @@ const LibroDiario = () => {
       setMensajeOperacion("Debe completar la descripcion de la operacion");
       return;
     }
+    setTrabajando(true);
     setMensajeOperacion("");
-    sessionStorage.setItem("operacion_"+ID, descripcionOperacion);
+    sessionStorage.setItem("operacion_" + ID, descripcionOperacion);
+    puedeEditar = sessionStorage.getItem("operacion_" + ID);
   };
   const finalizarOperacion = () => {
-    if(!sessionStorage.getItem('acientos_'+ID)){
-      setModal(!modal)
-      setMensajeOperacion('Debe agregar acientos para poder guardar la operación')
+    if (
+      sessionStorage.getItem("acientos_" + ID) &&
+      !sessionStorage.getItem("operacion_" + ID)
+    ) {
+      sessionStorage.removeItem("acientos_" + ID);
     }
-    const acientosDelSessionStorage = JSON.parse(sessionStorage.getItem('acientos_'+ID));
-    if(totalDebe(acientosDelSessionStorage) !== totalHaber(acientosDelSessionStorage)){
+    if (!sessionStorage.getItem("acientos_" + ID)) {
       setModal(!modal);
-      setMensajeOperacion('ERROR DE BALANCE DE OPERACIÓN, no se puede guardar la operación hasta que el debe y el haber no coincidan');
-      return
+      setMensajeOperacion(
+        "Debe agregar acientos para poder guardar la operación"
+      );
     }
-    
+    const acientosDelSessionStorage = JSON.parse(
+      sessionStorage.getItem("acientos_" + ID)
+    );
+    if (
+      totalDebe(acientosDelSessionStorage) !==
+      totalHaber(acientosDelSessionStorage)
+    ) {
+      setModal(!modal);
+      setMensajeOperacion(
+        "ERROR DE BALANCE DE OPERACIÓN, no se puede guardar la operación hasta que el debe y el haber no coincidan"
+      );
+      return;
+    }
+    setTrabajando(false);
+
     setMensajeOperacion("");
     axios
       .post(
         config.APIURL_DESARROLLO + "/librodiario/agregaroperacion/" + ID,
         {
-          descripcion: sessionStorage.getItem("operacion_"+ID),
+          descripcion: sessionStorage.getItem("operacion_" + ID),
           libro_diario: ID,
         },
         {
@@ -130,48 +154,55 @@ const LibroDiario = () => {
         }
       )
       .then((res) => {
-        const acientosDeOperacionNueva = JSON.parse(sessionStorage.getItem('acientos_'+ID));
+        const acientosDeOperacionNueva = JSON.parse(
+          sessionStorage.getItem("acientos_" + ID)
+        );
 
-        acientosDeOperacionNueva.map((aciento)=>{
+        acientosDeOperacionNueva.map((aciento) => {
           axios
-          .post(
-            config.APIURL_DESARROLLO + "/librodiario/agregarAciento/" + ID,
-            {
-              cuenta: aciento.cuenta,
-              monto: aciento.monto,
-              vp: aciento.variacion_patrimonial,
-              operacion: res.data.insertId,
-              tipo: aciento.tipo,
-            },
-            {
-              headers: {
-                autorizacion: token,
+            .post(
+              config.APIURL_DESARROLLO + "/librodiario/agregarAciento/" + ID,
+              {
+                cuenta: aciento.cuenta,
+                monto: aciento.monto,
+                vp: aciento.variacion_patrimonial,
+                operacion: res.data.insertId,
+                tipo: aciento.tipo,
               },
-            }
-          )
-          .then(() => {})
-          .catch(() => {
-            setModal(!modal)
-            setMensajeOperacion('No se pudo guardar unos de los acientos')
-return
-          });
-          
-        })
-        sessionStorage.clear();
-        setModal(!modal)
-        setMensajeOperacion('Operacion creada con éxito, id de operación: '+res.data.insertId);
-        obtenerAcientos()
+              {
+                headers: {
+                  autorizacion: token,
+                },
+              }
+            )
+            .then(() => {})
+            .catch(() => {
+              setModal(!modal);
+              setMensajeOperacion("No se pudo guardar unos de los acientos");
+              return;
+            });
+        });
+        sessionStorage.removeItem("acientos_" + ID);
+        sessionStorage.removeItem("operacion_" + ID);
+
+        setModal(!modal);
+        setMensajeOperacion(
+          "Operacion creada con éxito, id de operación: " + res.data.insertId
+        );
+        obtenerAcientos();
       })
       .catch((err) => {
         console.log(err.response.data);
       });
   };
-  const cancelarOperacion = ()=>{
-    sessionStorage.clear();
-    //agregar mensaje modal
+  const cancelarOperacion = () => {
+    setTrabajando(false);
+
+    sessionStorage.removeItem("acientos_" + ID);
+    sessionStorage.removeItem("operacion_" + ID);
     setModal(!modal);
-    setMensajeOperacion('Operacion cancelada')
-  }
+    setMensajeOperacion("Operacion cancelada");
+  };
   return (
     <div>
       <div className="d-flex align-items-start flex-column">
@@ -187,19 +218,46 @@ return
           </h2>
         </div>
         <div className="vistaMayor mb-5">
-          <select name="select" key={"select"}>
-        
+          <select
+            name="select"
+            key={"select"}
+            onChange={(e) => {
+              setCuentaMayor(e.target.value);
+            }}
+            value={cuentaMayor}
+          >
             {todasLasCuentas.map((cuenta) => (
               <option value={cuenta} key={cuenta}>
                 {cuenta}
               </option>
             ))}
           </select>{" "}
-          <Button variant="secondary" cl>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setMayor(true);
+              setCuentaMayor(cuentaMayor)
+            }}
+          >
             Ver Libro mayor
           </Button>
+          <Modal show={mayor} closeButton>
+            <Modal.Header>Libro Mayor: {cuentaMayor}</Modal.Header>
+            <Modal.Body style={{overflow: 'auto'}}>
+              <LibroMayor datos={datos} cuenta={cuentaMayor}></LibroMayor>
+            </Modal.Body>
+            <Modal.Footer >
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setMayor(!mayor);
+                }}
+              >
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
-       
       </div>
 
       <div
@@ -219,12 +277,11 @@ return
         )}
 
         <div className="d-flex justify-content-between">
-         
           {mensajeOperacion === "Operación creada!" && (
             <Alert variant="success">{mensajeOperacion}</Alert>
           )}
           <div className="d-flex justify-content-between mb-3">
-            {!puedeEditar ? (
+            {!trabajando ? (
               <>
                 <input
                   type="text"
@@ -244,24 +301,36 @@ return
               </>
             ) : (
               <>
-                <Button variant="success" style={{ marginRight: "9px" }} onClick={finalizarOperacion}>
+                <Button
+                  variant="success"
+                  style={{ marginRight: "9px" }}
+                  onClick={finalizarOperacion}
+                >
                   Finalizar operación
                 </Button>
-                <Button variant="danger" onClick={cancelarOperacion}>Cancelar Operacion</Button>
+                <Button variant="danger" onClick={cancelarOperacion}>
+                  Cancelar Operacion
+                </Button>
               </>
             )}
-            <Modal show={modal}  closeButton>
-                <Modal.Header className="bg-danger text-light" >
-                  Error
-                </Modal.Header>
-                <Modal.Body className="bg-danger text-light">
+            <Modal show={modal} closeButton>
+              <Modal.Header className="bg-danger text-light">
+                Error
+              </Modal.Header>
+              <Modal.Body className="bg-danger text-light">
                 {mensajeOperacion}
-                </Modal.Body>
-                <Modal.Footer className="bg-danger">
-                  <Button variant="outline-light" onClick={()=>{setModal(!modal)}}>Cerrar</Button>
-                </Modal.Footer>
-              </Modal>
-            
+              </Modal.Body>
+              <Modal.Footer className="bg-danger">
+                <Button
+                  variant="outline-light"
+                  onClick={() => {
+                    setModal(!modal);
+                  }}
+                >
+                  Cerrar
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         </div>
       </div>

@@ -1,24 +1,18 @@
 import React, {  useEffect, useState } from 'react';
-import { Alert, Button, Table } from 'react-bootstrap';
+import {  Button, Table } from 'react-bootstrap';
 import Aciento from './Aciento';
-import axios from 'axios';
-import config from '../../config/config';
 import validacionCuentas from '../../helpers/validacionCuentas';
 import { todasLasCuentas } from '../../helpers/todasLasCuentas';
-import { variacionesPatrimoniales } from '../../helpers/variacionesPatrimoniales';
 import { formatearFecha } from '../../helpers/formatearFecha';
 
 const LDTabla = ({ datos, id, editar }) => {
   const [cuenta, setCuenta] = useState('mercaderías');
   const [VP, setVP] = useState('');
   const [error, setError] = useState('');
-
   const [debe, setDebe] = useState('');
   const [haber, setHaber] = useState('');
   const [tipo, setTipo] = useState('');
   const [nuevosArreglos, setNuevosArreglos] = useState([]);
-  const [nuevaOperacion,setNuevaOperacion] = useState('');
-  const token = document.cookie.replace('token=', '');
   useEffect(()=>{
     if(sessionStorage.getItem('acientos_'+id)) setNuevosArreglos(JSON.parse(sessionStorage.getItem('acientos_'+id)))
   },[])
@@ -85,7 +79,7 @@ setError('');
       <tbody >
 
         {datos.length > 0 && datos.map(aciento => <Aciento aciento={aciento}  />)}
-        {nuevosArreglos.length >0 && nuevosArreglos.map(aciento=>{return <Aciento aciento={aciento} color={'#ff7e00'}/> })}
+        {nuevosArreglos.length >0 && sessionStorage.getItem('acientos_'+id) && nuevosArreglos.map(aciento=>{return <Aciento aciento={aciento} color={'#ff7e00'}/> })}
         {editar && 
         <tr>
         <td>{formatearFecha(new Date())}</td>
