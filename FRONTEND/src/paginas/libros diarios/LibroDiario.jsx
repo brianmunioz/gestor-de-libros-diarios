@@ -7,6 +7,7 @@ import { todasLasCuentas } from "../../helpers/todasLasCuentas";
 import { variacionesPatrimoniales } from "../../helpers/variacionesPatrimoniales";
 import LDTabla from "../../componentes/librodiario/LDTabla";
 import LibroMayor from "../../componentes/librodiario/LibroMayor"
+import BalanceSumasYSaldos from "../../componentes/librodiario/BalanceSumasYSaldos";
 
 const LibroDiario = () => {
   const { ID } = useParams();
@@ -207,23 +208,35 @@ const LibroDiario = () => {
     <div>
       <div className="d-flex align-items-start flex-column">
         <div className="shadow rounded p-3 mb-3">
-          <Button variant="dark" className="mb-3">
+          <Button variant="dark" className="mb-3" onClick={() => {
+              setSumassaldos(true);
+            }}>
             Ver balance de comprobacion de sumas y saldos
           </Button>
-          <h2>
-            Debe: <span className="text-success">{totalDebe(datos)}</span>
-          </h2>
-          <h2>
-            Haber: <span className="text-danger">{totalHaber(datos)}</span>
-          </h2>
-        </div>
-        <div className="vistaMayor mb-5">
+          <Modal show={sumassaldos} closeButton>
+            <Modal.Header>Libro de balance de sumas y saldos</Modal.Header>
+            <Modal.Body style={{overflow: 'auto'}}>
+            <BalanceSumasYSaldos datos={datos}></BalanceSumasYSaldos>
+            </Modal.Body>
+            <Modal.Footer >
+              <Button
+                variant="danger"
+                onClick={() => {
+                  setSumassaldos(!sumassaldos);
+                }}
+              >
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          <div className="vistaMayor mb-5">
           <select
             name="select"
             key={"select"}
             onChange={(e) => {
               setCuentaMayor(e.target.value);
             }}
+            style={{width: '150px'}}
             value={cuentaMayor}
           >
             {todasLasCuentas.map((cuenta) => (
@@ -258,6 +271,8 @@ const LibroDiario = () => {
             </Modal.Footer>
           </Modal>
         </div>
+        </div>
+        
       </div>
 
       <div

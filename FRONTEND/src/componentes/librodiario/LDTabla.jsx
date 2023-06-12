@@ -60,12 +60,11 @@ const LDTabla = ({ datos, id, editar }) => {
 setError('');
     },5000)
   }
- console.log(datos)
 
   return (
-    <Table striped bordered hover>
+    <Table  bordered hover>
       <thead>
-        <tr>
+        <tr style={{background: '#fdfd96'}}>
           <th>Fecha</th>
           <th>Cuenta</th>
           <th>VP</th>

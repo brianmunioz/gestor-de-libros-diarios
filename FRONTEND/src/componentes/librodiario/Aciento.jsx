@@ -16,7 +16,7 @@ const Aciento = ({ aciento, color }) => {
 const colorCeldas = color ? color: 'white';
 if(fin){
   return (
-    <tr colspan="8"><td colspan="8" className='text-center'>{aciento.descripcion_operacion}</td></tr>
+    <tr colspan="8" style={{background: '#c3c370'}}><td colspan="8" className='text-center'>{aciento.descripcion_operacion}</td></tr>
     )
 }else{
   return (
