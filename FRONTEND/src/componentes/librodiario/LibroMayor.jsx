@@ -10,7 +10,7 @@ const LibroMayor = ({ datos, cuenta }) => {
   });
   let contador = 0;
   return (
-    <Table  bordered hover>
+    <Table   bordered hover>
       <thead>
         <tr style={{background: '#fdfd96'}}>
           <th>Fecha</th>

@@ -7,7 +7,8 @@ const MiniCard = ({ titulo, id }) => {
     <Card className='mb-3 border rounded'>
       <Card.Body className='bg-dark rounded'>
         <Card.Title className='text-light'>{titulo}</Card.Title>
-        <Button variant="secondary" ><Link className='text-white' to={'/librodiario/' + id}>Abrir</Link></Button>
+        <Link className='btn btn-outline-light' style={{marginRight: '10px'}} to={'/librodiario/' + id}>Abrir</Link>
+        <Link className='btn btn-light ' to={'/autorizaciones/' + id}>Autorizaciones</Link>
       </Card.Body>
     </Card>)
 }

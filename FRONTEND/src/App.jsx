@@ -3,12 +3,13 @@ import Header from './componentes/header/Header';
 import Home from './paginas/Home';
 import {Routes, Route} from 'react-router-dom';
 import Login from './paginas/login/Login';
-import Registro from './paginas/registro/registro';
+import Registro from './paginas/registro/Registro';
 import Dashboard from './paginas/dashboard/Dashboard';
 import MisLibrosDiarios from './paginas/libros diarios/MisLibrosDiarios';
 import LibroDiario from './paginas/libros diarios/LibroDiario';
 import AgregarLibroDiario from './paginas/libros diarios/AgregarLibroDiario';
 import LibroMayor from './paginas/libro mayor/LibroMayor';
+import Autorizar from './paginas/libros diarios/Autorizar';
 
 function App() {
 
@@ -25,12 +26,7 @@ function App() {
         <Route path='/librodiario/:ID' element={<LibroDiario/>}></Route> 
         <Route path='/agregarLD' element={<AgregarLibroDiario/>}></Route> 
         <Route path='/librodiario/:ID/mayor/:cuenta' element={<LibroMayor/>}></Route> 
-
-
-
-  
-   
-    
+        <Route path='/autorizaciones/:ID' element={<Autorizar/>}></Route>    
       </Routes>
     </div>
       

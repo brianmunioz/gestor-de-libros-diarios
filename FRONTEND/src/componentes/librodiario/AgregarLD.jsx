@@ -57,8 +57,8 @@ const AgregarLD = () => {
       {error && <Alert variant='danger'>{mensaje}</Alert>}
       {creado && <Alert variant='success'>{mensaje}</Alert>}
 
-      <Button variant="primary" type="submit">
-        Submit
+      <Button variant="dark" type="submit">
+        Crear nuevo libro diario
       </Button>
 
 

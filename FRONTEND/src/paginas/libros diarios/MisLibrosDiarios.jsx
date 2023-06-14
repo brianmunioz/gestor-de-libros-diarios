@@ -24,7 +24,7 @@ const MisLibrosDiarios = () => {
   }, [])
   return (
     <div className='container'>
-      <Button  className='mb-3'><Link className='text-white' to='/agregarLD'>Agregar Nuevo libro diario</Link></Button>
+      <Link className='btn btn-outline-dark mb-3' to='/agregarLD'>Agregar Nuevo libro diario</Link>
       {
         librosDiarios.length > 0 ?
           <>

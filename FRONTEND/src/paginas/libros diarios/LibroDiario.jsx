@@ -6,7 +6,7 @@ import axios from "axios";
 import { todasLasCuentas } from "../../helpers/todasLasCuentas";
 import { variacionesPatrimoniales } from "../../helpers/variacionesPatrimoniales";
 import LDTabla from "../../componentes/librodiario/LDTabla";
-import LibroMayor from "../../componentes/librodiario/LibroMayor"
+import LibroMayor from "../../componentes/librodiario/LibroMayor";
 import BalanceSumasYSaldos from "../../componentes/librodiario/BalanceSumasYSaldos";
 
 const LibroDiario = () => {
@@ -19,9 +19,12 @@ const LibroDiario = () => {
   const [mensajeOperacion, setMensajeOperacion] = useState("");
   const [modal, setModal] = useState(false);
   const [mayor, setMayor] = useState(false);
-  const [trabajando, setTrabajando] = useState(sessionStorage.getItem('operacion_'+ID)? true : false)
+  const [trabajando, setTrabajando] = useState(
+    sessionStorage.getItem("operacion_" + ID) ? true : false
+  );
   const [sumassaldos, setSumassaldos] = useState(false);
-  const [cuentaMayor, setCuentaMayor] = useState('MERCADERÍAS');
+  const [cuentaMayor, setCuentaMayor] = useState("MERCADERÍAS");
+  const [operacionCreada, setOperacionCreada] = useState(false);
 
   let puedeEditar = sessionStorage.getItem("operacion_" + ID) ? true : false;
   const obtenerAcientos = () => {
@@ -185,11 +188,22 @@ const LibroDiario = () => {
         });
         sessionStorage.removeItem("acientos_" + ID);
         sessionStorage.removeItem("operacion_" + ID);
-
         setModal(!modal);
+
         setMensajeOperacion(
           "Operacion creada con éxito, id de operación: " + res.data.insertId
         );
+        setIsLoading(true);
+        setOperacionCreada(true);
+        setTimeout(() => {
+          setMensajeOperacion("");
+          setModal(false);
+          setTimeout(() => {
+            setOperacionCreada(false);
+          }, 1000);
+
+          setIsLoading(false);
+        }, 3000);
         obtenerAcientos();
       })
       .catch((err) => {
@@ -208,17 +222,24 @@ const LibroDiario = () => {
     <div>
       <div className="d-flex align-items-start flex-column">
         <div className="shadow rounded p-3 mb-3">
-          <Button variant="dark" className="mb-3" onClick={() => {
+          <Button
+            variant="dark"
+            className="mb-3"
+            onClick={() => {
               setSumassaldos(true);
-            }}>
+            }}
+          >
             Ver balance de comprobacion de sumas y saldos
           </Button>
           <Modal show={sumassaldos} closeButton>
             <Modal.Header>Libro de balance de sumas y saldos</Modal.Header>
-            <Modal.Body style={{overflow: 'auto'}}>
-            <BalanceSumasYSaldos datos={datos}></BalanceSumasYSaldos>
+            <Modal.Body style={{ overflow: "auto" }}>
+              <BalanceSumasYSaldos
+                style={{ overflowY: "scroll" }}
+                datos={datos}
+              ></BalanceSumasYSaldos>
             </Modal.Body>
-            <Modal.Footer >
+            <Modal.Footer>
               <Button
                 variant="danger"
                 onClick={() => {
@@ -230,49 +251,48 @@ const LibroDiario = () => {
             </Modal.Footer>
           </Modal>
           <div className="vistaMayor mb-5">
-          <select
-            name="select"
-            key={"select"}
-            onChange={(e) => {
-              setCuentaMayor(e.target.value);
-            }}
-            style={{width: '150px'}}
-            value={cuentaMayor}
-          >
-            {todasLasCuentas.map((cuenta) => (
-              <option value={cuenta} key={cuenta}>
-                {cuenta}
-              </option>
-            ))}
-          </select>{" "}
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setMayor(true);
-              setCuentaMayor(cuentaMayor)
-            }}
-          >
-            Ver Libro mayor
-          </Button>
-          <Modal show={mayor} closeButton>
-            <Modal.Header>Libro Mayor: {cuentaMayor}</Modal.Header>
-            <Modal.Body style={{overflow: 'auto'}}>
-              <LibroMayor datos={datos} cuenta={cuentaMayor}></LibroMayor>
-            </Modal.Body>
-            <Modal.Footer >
-              <Button
-                variant="danger"
-                onClick={() => {
-                  setMayor(!mayor);
-                }}
-              >
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </Modal>
+            <select
+              name="select"
+              key={"select"}
+              onChange={(e) => {
+                setCuentaMayor(e.target.value);
+              }}
+              style={{ width: "150px" }}
+              value={cuentaMayor}
+            >
+              {todasLasCuentas.map((cuenta) => (
+                <option value={cuenta} key={cuenta}>
+                  {cuenta}
+                </option>
+              ))}
+            </select>{" "}
+            <Button
+              variant="outline-success"
+              onClick={() => {
+                setMayor(true);
+                setCuentaMayor(cuentaMayor);
+              }}
+            >
+              Ver Libro mayor
+            </Button>
+            <Modal show={mayor} closeButton>
+              <Modal.Header>Libro Mayor: {cuentaMayor}</Modal.Header>
+              <Modal.Body style={{ overflow: "auto" }}>
+                <LibroMayor datos={datos} cuenta={cuentaMayor}></LibroMayor>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    setMayor(!mayor);
+                  }}
+                >
+                  Cerrar
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </div>
         </div>
-        </div>
-        
       </div>
 
       <div
@@ -309,6 +329,7 @@ const LibroDiario = () => {
                 />
                 <Button
                   style={{ marginLeft: "10px" }}
+                  variant="outline-primary"
                   onClick={guardarNuevaOperacion}
                 >
                   Empezar nueva operacion
@@ -329,21 +350,39 @@ const LibroDiario = () => {
               </>
             )}
             <Modal show={modal} closeButton>
-              <Modal.Header className="bg-danger text-light">
-                Error
-              </Modal.Header>
-              <Modal.Body className="bg-danger text-light">
+              <Modal.Header
+                className={
+                  operacionCreada
+                    ? "bg-success text-light border-0"
+                    : "bg-danger text-light border-0"
+                }
+              ></Modal.Header>
+              <Modal.Body
+                className={
+                  operacionCreada
+                    ? "bg-success text-light border-0"
+                    : "bg-danger text-light border-0"
+                }
+              >
                 {mensajeOperacion}
               </Modal.Body>
-              <Modal.Footer className="bg-danger">
-                <Button
-                  variant="outline-light"
-                  onClick={() => {
-                    setModal(!modal);
-                  }}
-                >
-                  Cerrar
-                </Button>
+              <Modal.Footer
+                className={
+                  operacionCreada
+                    ? "bg-success text-light border-0"
+                    : "bg-danger text-light border-0"
+                }
+              >
+                {!operacionCreada && (
+                  <Button
+                    variant="outline-light"
+                    onClick={() => {
+                      setModal(!modal);
+                    }}
+                  >
+                    Cerrar
+                  </Button>
+                )}
               </Modal.Footer>
             </Modal>
           </div>
