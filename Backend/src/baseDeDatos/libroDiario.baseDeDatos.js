@@ -9,7 +9,7 @@ class LibroDiarioBDD {
     return new Promise((resolve, reject) => {
       _conn.query('SELECT * FROM libros_diarios', (error, results, fields) => {
         if (error) return reject(error);
-        return resolve(results);
+        return resolve(results[0]);
       });
     });
   }
@@ -18,6 +18,14 @@ class LibroDiarioBDD {
       _conn.query('SELECT * FROM libros_diarios where autor = ?',[id], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
+      });
+    });
+  }
+  async obtenerUsuarioIDdeLibroDiario(libro_diario){
+    return new Promise((resolve, reject) => {
+      _conn.query('SELECT autor FROM libros_diarios where id = ?',[libro_diario], (error, results, fields) => {
+        if (error) return reject(error);
+        return resolve(results[0].autor);
       });
     });
   }
@@ -65,7 +73,7 @@ class LibroDiarioBDD {
       FROM acientos
       INNER JOIN usuarios ON usuarios.id = acientos.autor
       INNER JOIN operacion ON acientos.libro_diario = operacion.libro_diario AND acientos.operacion = operacion.id
-      WHERE acientos.libro_diario = 10`,[libroDiarioID], (error, results, fields) => {
+      WHERE acientos.libro_diario = ?`,[libroDiarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
