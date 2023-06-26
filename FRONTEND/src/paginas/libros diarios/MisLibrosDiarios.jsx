@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import MiniCard from '../../componentes/librodiario/MiniCard'
 import axios from 'axios';
 import config from '../../config/config'
-import { Button } from 'react-bootstrap';
 
 const MisLibrosDiarios = () => {
   const navigate = useNavigate();

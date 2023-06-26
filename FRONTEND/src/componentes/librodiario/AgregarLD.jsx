@@ -37,8 +37,6 @@ const AgregarLD = () => {
         }
       })
       .catch((err) => {
-        console.log(err)
-
         if (err.status === 401) navigate('/')
         setError(true);
         setMensaje('Error de consulta')

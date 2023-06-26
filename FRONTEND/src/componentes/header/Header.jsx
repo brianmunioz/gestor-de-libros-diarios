@@ -17,6 +17,8 @@ function Header() {
 
   const cerrarSesion = () => {
     sessionStorage.clear();
+    localStorage.clear();
+
     document.cookie =
       "token=;expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/;";
     window.location = "/";
@@ -50,18 +52,18 @@ function Header() {
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id={`offcanvasNavbarLabel-expand-false`}>
-                Gestorneitor
+                Gestor contable
               </Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 <Nav.Link>
-                  <Link to="/">Home</Link>
+                  <Link to="/">Tutorial</Link>
                 </Nav.Link>
                 {!estaLogeado && (
                   <>
                     <Nav.Link>
-                      <Link to="/login">Iniciar sesion</Link>
+                      <Link to="/login" className="bt-outline-dark">Iniciar sesion</Link>
                     </Nav.Link>
 
                     <Nav.Link>
@@ -76,14 +78,14 @@ function Header() {
                       id={`offcanvasNavbarDropdown-expand-false`}
                     >
                       <NavDropdown.Item>
-                        <Link to="/misdatos">Mis datos</Link>
+                        <Link to={"/misdatos/"+localStorage.getItem('userID')}>Mis datos</Link>
                       </NavDropdown.Item>
                       <NavDropdown.Item>
-                        <Link to="/mislibrosdiarios">Mis libros diarios</Link>
+                        <Link to="/mislibrosdiarios" >Mis libros diarios</Link>
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
                       <NavDropdown.Item>
-                        <Link to="/librosdiariosenlosquetrabajo">
+                        <Link to="/librosdiariosenlosquetrabajo" >
                           Libros diarios en los que trabajo
                         </Link>
                       </NavDropdown.Item>
@@ -106,7 +108,7 @@ function Header() {
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
                       <NavDropdown.Item>
-                        <Link to="/gestionarlibrosdiarios">
+                        <Link to="/gestionarlibros">
                           Gestionar mis libros diarios
                         </Link>
                       </NavDropdown.Item>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "react-bootstrap";
+import { Alert, Spinner } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import validacionDePassword from "../../helpers/validacionDePassword";
@@ -201,7 +201,7 @@ const Registro = () => {
       {exito && (
         <Alert variant="success" mt-5 mb-5>
           Su usuario a sido creado, ahora puede usar su cuenta, será redirigido
-          al login...
+          al login <Spinner></Spinner>
         </Alert>
       )}
 

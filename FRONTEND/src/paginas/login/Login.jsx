@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Alert } from "react-bootstrap";
+import { Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import config from "../../config/config";
 
@@ -50,6 +50,10 @@ const Login = () => {
           sessionStorage.setItem(
             "user",
             res.data.usuario.nombre + " " + res.data.usuario.apellido
+          );
+          localStorage.setItem(
+            "userID",
+            res.data.usuario.id
           );
 
           setError(false);
@@ -102,7 +106,7 @@ const Login = () => {
       )}
       {exito && (
         <Alert variant="success" mt-5 mb-5>
-          Ingresando a su cuenta...
+          Ingresando a su cuenta <Spinner></Spinner>
         </Alert>
       )}
       <Button variant="outline-dark" type="submit">

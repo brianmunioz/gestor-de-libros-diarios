@@ -207,7 +207,10 @@ const LibroDiario = () => {
         obtenerAcientos();
       })
       .catch((err) => {
-        console.log(err.response.data);
+        setModal(!modal);
+      setMensajeOperacion(
+        "Hubo un error, por favor intentelo más tarde!"
+      );
       });
   };
   const cancelarOperacion = () => {

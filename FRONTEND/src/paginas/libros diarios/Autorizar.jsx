@@ -3,16 +3,18 @@ import React, { useEffect, useState } from "react";
 import config from "../../config/config";
 import { useParams } from "react-router-dom";
 import { Button, Modal, Spinner } from "react-bootstrap";
+import ModalMensaje from "../../componentes/ModalMensaje";
 
 const Autorizar = () => {
   const token = document.cookie.replace("token=", "");
   const [usuarios, setUsuarios] = useState([]);
   const [inputUsuario, setInputUsuario] = useState("");
-  const [modal, setModal] = useState({
-    show: false,
+   const [modal, setModal] = useState({
+    mostrar: false,
     mensaje: "",
-    color: "",
-    textoColor: "",
+    textColor: "",
+    bgColor: "",
+    titulo: ""
   });
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +35,15 @@ const Autorizar = () => {
       .then((res) => {
         setUsuarios(res.data);
       })
-      .catch(console.log);
+      .catch(()=>{
+        setModal({
+          mostrar: true,
+          mensaje: "Hubo un error por favor intentelo más tarde!",
+          bgColor: "danger",
+          textColor: "light",
+          titulo: 'Error de servidores'
+        });
+      });
   };
   useEffect(() => {
     obtenerUsuarios();
@@ -53,10 +63,11 @@ const Autorizar = () => {
       .then((res) => {
         if (res.status === 200) {
           setModal({
-            show: true,
+            mostrar: true,
             mensaje: "Se eliminó al usuario del id: " + id,
-            color: "danger",
-            textoColor: "light",
+            bgColor: "danger",
+            textColor: "light",
+            titulo: 'Eliminado con éxito'
           });
           setLoading(true);
           setTimeout(() => {
@@ -65,17 +76,26 @@ const Autorizar = () => {
           }, 3000);
         }
       })
-      .catch(console.log);
+      .catch(()=>{
+        setModal({
+          mostrar: true,
+          mensaje: "Hubo un error por favor intentelo más tarde!",
+          bgColor: "danger",
+          textColor: "light",
+          titulo: 'Error de servidores'
+        });
+      });
   };
 
   const agregarUsuario = (e, id) => {
     e.preventDefault();
-    if (!id || typeof id !== "number") {
+    if (!id || typeof parseInt(id) !== "number" || isNaN(id)) {
       setModal({
-        show: true,
+        mostrar: true,
         mensaje: "Por favor ingrese un id válido ",
-        color: "danger",
-        textoColor: "light",
+        bgColor: "danger",
+        textColor: "light",
+        titulo: 'Error en el campo id'
       });
       return;
     }
@@ -93,10 +113,11 @@ const Autorizar = () => {
       .then((res) => {
         if (res.status === 201) {
           setModal({
-            show: true,
-            mensaje: "Usuario creado con éxito!",
-            color: "light",
-            textoColor: "dark",
+            mostrar: true,
+            mensaje: "Usuario: "+id+ ' ahora tiene acceso para trabajar en el libro: '+ID,
+            bgColor: "light",
+            textColor: "dark",
+            titulo: 'Autorizacion creada!'
           });
           setLoading(true);
           setTimeout(() => {
@@ -105,45 +126,28 @@ const Autorizar = () => {
           }, 3000);
         }
       })
-      .catch(console.log);
+      .catch(()=>{
+        setModal({
+          mostrar: true,
+          mensaje: "Hubo un error por favor intentelo más tarde!",
+          bgColor: "danger",
+          textColor: "light",
+          titulo: 'Error de servidores'
+        });
+      });
   };
   return (
     <div className="d-flex flex-column justify-content-center align-items-center">
-      <Modal show={modal.show} closeButton>
-        <Modal.Header
-          className={
-            "bg-" +
-            modal.color +
-            " border-0" +
-            " text-" +
-            modal.textoColor +
-            " text-" +
-            modal.textoColor
-          }
-        >
-          {modal.mensaje}
-        </Modal.Header>
 
-        <Modal.Footer
-          className={
-            "bg-" + modal.color + " border-0" + " text-" + modal.textoColor
-          }
-        >
-          <Button
-            variant={modal.color !== "danger" ? "danger" : "outline-light"}
-            onClick={() => {
-              setModal({
-                show: false.show,
-                mensaje: "",
-                color: "",
-                textoColor: "",
-              });
-            }}
-          >
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ModalMensaje mostrar={modal.mostrar} setMostrar={()=>{setModal({
+    mostrar: false,
+    mensaje: "",
+    textColor: "",
+    bgColor: "",
+    titulo: ""
+      })}} mensaje={modal.mensaje} titulo={modal.titulo} bgColor={modal.bgColor} textColor={modal.textColor}></ModalMensaje>
+     
+
       <form
         className="d-flex justify-content-between mb-5"
         onSubmit={(e) => agregarUsuario(e, inputUsuario)}
@@ -164,17 +168,17 @@ const Autorizar = () => {
         />
       </form>
 
-      <h2>Usuarios autorizados</h2>
+      <h2 className="mb-5">Usuarios autorizados</h2>
 
       <ul>
         {usuarios.length > 0 &&
           !loading &&
           usuarios.map((item) => {
             return (
-              <li>
-                <span style={{ marginRight: "20px" }}>{item.email}</span>{" "}
+              <li style={{ width: "260px" }} className="d-flex border border shadow rounded p-3 mb-5 justify-content-between">
+                <span >{'ID: '+item.autor }<br></br>{item.email}</span>{" "}
                 <button
-                  className="btn btn-outline-danger "
+                  className="btn btn-outline-danger " style={{height: '40px'}}
                   onClick={() => eliminarUsuario(item.autor)}
                 >
                   eliminar
