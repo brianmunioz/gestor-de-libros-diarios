@@ -10,10 +10,22 @@ class AutorizacionControlador {
         const autorizacion = await _autorizacionServicio.obtenerAutorizacion(body,user);
         return res.status(200).json(autorizacion)
     }
+    
+  async obtenerLDenLosQueTrabajo(req,res){
+  const {user} = req.headers;
+    const librosEnLosQueTrabajo = await _autorizacionServicio.obtenerLDenLosQueTrabajo(user);
+    return res.status(200).json(librosEnLosQueTrabajo)
+   }
     async obtenerUsuariosAutorizados(req, res){
         const {user} = req.headers;
         const {libroDiarioID } = req.params;
         const obtenerAutorizados = await _autorizacionServicio.obtenerUsuariosAutorizados(libroDiarioID, user);
+        return res.status(200).json(obtenerAutorizados);
+    }
+    async librosEnLosQueTrabajo(req, res){
+        const {user} = req.headers;
+        const {libroDiarioID } = req.params;
+        const obtenerAutorizados = await _autorizacionServicio.usuarioEstaAutorizado(libroDiarioID, user);
         return res.status(200).json(obtenerAutorizados);
     }
     async agregarAutorizacion(req,res){

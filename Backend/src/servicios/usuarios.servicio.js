@@ -1,6 +1,8 @@
 const { compareSync } = require('bcrypt');
 const UsuariosBDD = require('../baseDeDatos/usuarios.baseDeDatos');
-const { validarPassword } = require('../helpers');
+const { validarPassword, encriptarPassword } = require('../helpers');
+const diferenciaDiasDeFechas = require('../helpers/diferenciaDiasDeFechas');
+
 let _usuariosBDD;
 class UsuariosServicio {
   constructor() {
@@ -15,38 +17,47 @@ class UsuariosServicio {
     async compararContraseñas(pass,hash){
       return  compareSync(pass, hash);
     }
-    async cambiarPassword(data){
-      const verificarPass = validarPassword(data.pass);
-        if(!data){
-            const error = new Error('Debe enviar datos')
+    async obtenerPass(id){
+      return _usuariosBDD.obtenerPass(id);
+    }
+    async obtenerUsuario(usuarioID){
+      return _usuariosBDD.obtenerUsuario(usuarioID)
+    }
+    async cambiarPassword(data,usuarioID){
+      const verificarPassNueva = validarPassword(data.passNueva);
+      const passDelUsuario = await this.obtenerPass(usuarioID);
+      const esValidaPassActual = await this.compararContraseñas(data.passActual,passDelUsuario[0].pass)
+        if(!esValidaPassActual){
+            const error = new Error(JSON.stringify({mensaje: 'La contraseña actual es incorrecta!', passNueva: false}))
             error.status = 400;
             throw error
         }
-       else if(!data.pass){
-            const error = new Error('Es obligatorio enviar contraseña')
+        else  if(!data.passNueva){
+          const error = new Error(JSON.stringify({mensaje: 'Es obligatorio enviar contraseña nueva', passNueva: true}))
+          error.status = 400;
+          throw error
+      }else if(verificarPassNueva.esValido === false){
+          const error = new Error(JSON.stringify({mensaje: verificarPassNueva.error, passNueva: true}))
             error.status = 400;
             throw error
-        }else if(!data.id){
-            const error = new Error('No se a encontrado id del usuario')
-            error.status = 401;
-            throw error
-        }else if(verificarPass.esValido === false  ){
-          const error = new Error(verificarPass.error)
-            error.status = 401;
-            throw error
         }
-        if(data.id !== req.user){
-          const error = new Error('No estás autorizado para cambiar la contraseña de este usuario')
-          error.status = 401;
-          throw error          
+        const usuario = await _usuariosBDD.obtenerUsuario(usuarioID);
+        const diasTotalesDeDiferencia  = diferenciaDiasDeFechas(usuario[0].fecha_actualizacion.toString(), Date().toString()); 
+        if(diasTotalesDeDiferencia <= 7){
+          const diasQueLeFaltaParaActualizar = 7-parseInt(diasTotalesDeDiferencia);
+          const error = new Error(JSON.stringify({mensaje: "No puedes cambiar tus datos hasta después de "+diasQueLeFaltaParaActualizar+" dias.", noPuedeModificar: true}));
+          error.status = 400;
+          throw error;
         }
+        data.pass = encriptarPassword(data.passNueva) ;
+        data.id = usuarioID;
       return  _usuariosBDD.cambiarPassword(data);
   
     }
     async agregarUsuario(data) {      
         return _usuariosBDD.agregarUsuario(data);      
     }
-    async editarUsuario(data) {
+    async editarUsuario(data,usuarioID) {
         if(!data){
             const error = new Error('Es obligatorio enviar datos')
             error.status = 400;
@@ -59,16 +70,20 @@ class UsuariosServicio {
             const error = new Error('Debe ingresar un apellido válido')
             error.status = 400;
             throw error
-        }else if (data.email.match(regPatternEmail) === false  && (!data.email)) {
+        }else if (!data.email) {
             const error = new Error('Debe ingresar un email válido')
             error.status = 400;
             throw error     
         }
-        if(data.id !== req.user){
-          const error = new Error('No estás autorizado para editar este usuario')
-          error.status = 401;
-          throw error          
+        const usuario = await _usuariosBDD.obtenerUsuario(usuarioID);
+        const diasTotalesDeDiferencia  = diferenciaDiasDeFechas(usuario[0].fecha_actualizacion.toString(), Date().toString()); 
+        if(diasTotalesDeDiferencia <= 30){
+          const diasQueLeFaltaParaActualizar = 30-parseInt(diasTotalesDeDiferencia);
+          const error = new Error("No puedes cambiar tus datos hasta después de "+diasQueLeFaltaParaActualizar+" dias.");
+          error.status = 400;
+          throw error;
         }
+       data.usuarioID = usuarioID;
         return _usuariosBDD.editarUsuario(data);
     }
     async eliminarUsuario(usuarioID) {  

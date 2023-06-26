@@ -9,6 +9,7 @@ module.exports = function () {
     router.post("/agregarautorizacion",AutenticacionJWT('addAuth'), AutorizacionControlador.agregarAutorizacion);
     router.delete("/eliminarautorizacion",AutenticacionJWT('deleteAuth'), AutorizacionControlador.eliminarAutorizacion);
     router.get("/obtenerusuariosautorizados/:libroDiarioID",AutenticacionJWT('ObtenerAuth'), AutorizacionControlador.obtenerUsuariosAutorizados);
+    router.get('/librosenlosquetrabajo',[AutenticacionJWT('getLfD')],AutorizacionControlador.obtenerLDenLosQueTrabajo)
 
 
 

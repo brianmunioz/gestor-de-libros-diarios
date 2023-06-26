@@ -47,11 +47,7 @@ class LibroDiarioServicio {
     err.status = 401;
     throw err;
    }
-   if(libroDiarioID !== req.user){
-    const error = new Error('No estás autorizado para editar este libro diario')
-    error.status = 401;
-    throw error          
-  }
+ 
     data.libroDiarioID = libroDiarioID;
     data.fecha_actualizacion = new Date();
 
@@ -62,21 +58,17 @@ class LibroDiarioServicio {
    
     if(!libroDiarioID || isNaN(libroDiarioID)){
       const err = new Error('El identificador del id no es válido');
-      err.status = 401;
+      err.status = 400;
       throw err;
     }
-    if(libroDiarioID !== req.user){
-      const error = new Error('No estás autorizado para eliminar este libro diario')
-      error.status = 401;
-      throw error          
-    }
+  
     return _libroDiarioBB.eliminarLibroDiario(libroDiarioID);
 
   }
   async obtenerAcientos(libroDiarioID) {
     if(!libroDiarioID || isNaN(libroDiarioID)){
       const err = new Error('El identificador del id no es válido');
-      err.status = 401;
+      err.status = 400;
       throw err;
     } 
    

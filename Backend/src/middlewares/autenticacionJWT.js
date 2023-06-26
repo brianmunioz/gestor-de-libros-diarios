@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
-const {rol} = require('../config/index');
 const { claveSecretaJWT } = require('../config');
+const AutorizacionServicio = require('../servicios/autorizacion.servicio');
+const servicioAutorizacion = new AutorizacionServicio();
 module.exports =function (accion){
 return (req, res, next)=>{
     const token = req.headers['autorizacion'];
@@ -9,14 +10,23 @@ return (req, res, next)=>{
         error.status = 401;
         throw error;
     }
-    jwt.verify(token, claveSecretaJWT, function (err, decodedToken) {
+    jwt.verify(token, claveSecretaJWT, async function (err, decodedToken) {
         if (err) {
             const error = new Error('Token inválido');
             error.status = 401;
             throw error;
         }
-    
-        req.headers.user = decodedToken.usuario.id;         
+        req.headers.user = decodedToken.usuario.id; 
+
+        if(accion === "getAcientos"){
+            const {libroDiarioID} = req.params;
+           const estaAutorizado = await servicioAutorizacion.usuarioEstaAutorizado(libroDiarioID,req.headers.user);
+           if(!(estaAutorizado.length > 0)){
+            const error = new Error('No está autorizado para usar este libro');
+            error.status = 401;
+            throw error;
+           }
+        }        
         next();
     })
 }

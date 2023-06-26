@@ -20,4 +20,4 @@ function conexionBDD(){
 }
 
 
-module.exports = conexionBDD;
+module.exports = conexionBDD();

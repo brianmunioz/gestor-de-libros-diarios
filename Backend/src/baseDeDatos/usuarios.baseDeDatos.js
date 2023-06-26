@@ -2,7 +2,7 @@ const conexionBDD = require("./crearConexion.baseDeDatos");
 let _conn;
 class UsuariosBDD {
   constructor() {
-    _conn = conexionBDD()
+    _conn = conexionBDD
   }
   async obtenerUsuarios() {
     return new Promise((resolve, reject) => {
@@ -45,15 +45,25 @@ class UsuariosBDD {
 
   async obtenerUsuario(usuarioID) {
     return new Promise((resolve, reject) => {
-      _conn.query('SELECT * FROM usuarios WHERE id= ?', [usuarioID], (error, results, fields) => {
+      _conn.query('SELECT nombre, apellido, email, fecha_nacimiento, fecha_creacion,fecha_actualizacion FROM usuarios WHERE id= ?', [usuarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });
     });
   }
+  async obtenerPass(id){
+    return new Promise((resolve,reject)=>{
+      _conn.query('SELECT pass FROM usuarios where id = ?',[id],(error,results,fields)=>{
+        if(error) return reject(error);
+        
+        return resolve(results);
+
+      })
+    })
+  }
   async cambiarPassword(data) {
     return new Promise((resolve, reject) => {
-      _conn.query('UPDATE usuarios SET pass = ? WHERE id = ?', [data.pass, data.id], (error, results, field) => {
+      _conn.query('UPDATE usuarios SET pass = ?, fecha_actualizacion = DATE(NOW()) WHERE id = ? ', [data.pass, data.id], (error, results, field) => {
         if (error) return reject(error);
         return resolve(results)
       })
@@ -84,7 +94,7 @@ class UsuariosBDD {
   async editarUsuario(data) {
 
     return new Promise((resolve, reject) => {
-      _conn.query(`UPDATE usuarios SET  nombre = ?, apellido = ? , fecha_actualizacion= ? WHERE id = ? `, [data.nombre, data.apellido, data.fecha_actualizacion, data.usuarioID], (error, results, fields) => {
+      _conn.query(`UPDATE usuarios SET  nombre = ?, apellido = ? , fecha_actualizacion= DATE(NOW()) WHERE id = ? `, [data.nombre, data.apellido, data.usuarioID], (error, results, fields) => {
         if (error) return reject(error);
         return resolve(results);
       });

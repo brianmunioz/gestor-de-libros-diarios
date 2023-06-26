@@ -1,4 +1,3 @@
-const e = require("express");
 const AutorizacionesBaseDeDatos = require("../baseDeDatos/autorizaciones.baseDeDatos");
 const LibroDiarioBDD = require("../baseDeDatos/libroDiario.baseDeDatos");
 const {
@@ -43,6 +42,29 @@ class AutorizacionServicio {
 
     return _autorizacionesBDD.obtenerAutorizacion(datos.id, datos.libro_diario);
   }
+
+
+  async obtenerLDenLosQueTrabajo(usuario){
+    if(!usuario){
+      const error = new Error("Debe ingresar un usuario");
+      error.status = 400;
+      throw error;
+      
+    }
+    return _autorizacionesBDD.obtenerLDenLosQueTrabajo(usuario);
+   }
+
+  async usuarioEstaAutorizado(libro_diario,usuario){
+    if (!libro_diario) {
+      const error = new Error("Debe enviar libro diario");
+      error.status = 400;
+      throw error;
+    }   
+      return await _autorizacionesBDD.usuarioEstaAutorizado({libro_diario,usuario});
+
+  }
+
+
 
   async obtenerUsuariosAutorizados(libro_diario, usuario) {
     if (!libro_diario) {
@@ -89,7 +111,7 @@ class AutorizacionServicio {
     );
     if (existeAutorizacion.length > 0) {
       const error = new Error("Este usuario ya existe");
-      error.status = 401;
+      error.status = 400;
       throw error;
     }
     datos.fecha = new Date();

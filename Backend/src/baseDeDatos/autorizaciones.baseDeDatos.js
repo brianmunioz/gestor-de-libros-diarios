@@ -2,7 +2,7 @@ const conexionBDD = require("./crearConexion.baseDeDatos");
 let _conn;
 class AutorizacionesBaseDeDatos {
   constructor() {
-    _conn = conexionBDD()
+    _conn = conexionBDD
   }
   async obtenerAutorizacion(id,libro_diario) {
     return new Promise((resolve, reject) => {
@@ -20,7 +20,22 @@ class AutorizacionesBaseDeDatos {
       });
     });
   }
- 
+ async usuarioEstaAutorizado(data){
+  return new Promise((resolve, reject) => {
+    _conn.query('SELECT autor FROM autorizacion_libro where libro_diario = ? and autor = ?  ',[data.libro_diario,data.usuario], (error, results, fields) => {
+      if (error) return reject(error);
+      return resolve(results);
+    });
+  });
+ }
+ async obtenerLDenLosQueTrabajo(usuario){
+  return  new Promise((resolve,reject)=>{
+    _conn.query("SELECT DISTINCT * FROM autorizacion_libro JOIN libros_diarios on autorizacion_libro.libro_diario = libros_diarios.id WHERE autorizacion_libro.autor = ? ",[usuario],(error, results,fields)=>{
+      if(error) return reject(error);
+     return resolve(results)
+    })
+  })
+ }
  
   async agregarAutorizacion(data) {
 

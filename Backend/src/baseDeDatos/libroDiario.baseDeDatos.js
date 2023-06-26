@@ -2,7 +2,7 @@ const conexionBDD = require("./crearConexion.baseDeDatos");
 let _conn;
 class LibroDiarioBDD {
   constructor() {
-    _conn = conexionBDD()
+    _conn = conexionBDD
   }
   //libro diario 
   async obtenerLibrosDiarios() {

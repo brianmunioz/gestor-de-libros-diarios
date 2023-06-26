@@ -8,9 +8,15 @@ class UsuariosControlador {
         const respuesta = await _usuariosServicio.obtenerUsuarios();
         return res.status(200).json(respuesta);
     }
+    async obtenerUsuario(req, res) {
+         const {idUsuario} = req.params;
+        const respuesta = await _usuariosServicio.obtenerUsuario(idUsuario);
+        return res.status(200).json(respuesta);
+    }
     async cambiarPassword(req, res) {
         const { body } = req;
-        const respuesta = await _usuariosServicio.cambiarPassword(body);
+        const {user} = req.headers;
+        const respuesta = await _usuariosServicio.cambiarPassword(body,user);
         return res.status(201).json(respuesta);
     }
     async agregarUsuario(req, res) {
@@ -20,7 +26,8 @@ class UsuariosControlador {
     }
     async editarUsuario(req, res) {
         const { body } = req;
-        const respuesta = await _usuariosServicio.editarUsuario(body);
+        const {user} = req.headers;
+        const respuesta = await _usuariosServicio.editarUsuario(body,user);
         return res.status(201).json(respuesta);
     }
     async eliminarUsuario(req, res) {
