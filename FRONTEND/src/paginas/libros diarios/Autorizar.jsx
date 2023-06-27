@@ -50,6 +50,16 @@ const Autorizar = () => {
   }, []);
 
   const eliminarUsuario = (id) => {
+    
+    if(id === parseInt(localStorage.getItem("userID"))){
+      setModal({
+        mostrar: true,
+        mensaje: "No te puedes eliminar a ti mismo!",
+        bgColor: "danger",
+        textColor: "light",
+        titulo: 'Error de usuario'
+      });
+    }
     axios
       .delete(config.APIURL_DESARROLLO + "/autorizacion/eliminarAutorizacion", {
         headers: {
@@ -126,14 +136,29 @@ const Autorizar = () => {
           }, 3000);
         }
       })
-      .catch(()=>{
-        setModal({
-          mostrar: true,
-          mensaje: "Hubo un error por favor intentelo más tarde!",
-          bgColor: "danger",
-          textColor: "light",
-          titulo: 'Error de servidores'
-        });
+      .catch((err)=>{
+        if(err.response.data.status === 400){
+          setModal({
+            mostrar: true,
+            mensaje: err.response.data.message,
+            bgColor: "danger",
+            textColor: "light",
+            titulo: 'Error de tipeo '
+          });
+          return;
+        }else{
+          setModal({
+            mostrar: true,
+            mensaje: "Hubo un error por favor intentelo más tarde!",
+            bgColor: "danger",
+            textColor: "light",
+            titulo: 'Error de servidores'
+          });
+
+
+
+        }
+    
       });
   };
   return (

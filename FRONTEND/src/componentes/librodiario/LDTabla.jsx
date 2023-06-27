@@ -12,6 +12,7 @@ const LDTabla = ({ datos, id, editar }) => {
   const [debe, setDebe] = useState("");
   const [haber, setHaber] = useState("");
   const [tipo, setTipo] = useState("");
+  const [calculadora, setCalculadora] = useState(false)
   const [nuevosArreglos, setNuevosArreglos] = useState([]);
   useEffect(() => {
     if (sessionStorage.getItem("acientos_" + id))
@@ -45,6 +46,9 @@ const LDTabla = ({ datos, id, editar }) => {
     arregloDeAcientos.push(nuevoAciento);
     setNuevosArreglos(arregloDeAcientos);
     sessionStorage.setItem("acientos_" + id, JSON.stringify(arregloDeAcientos));
+    setDebe("");
+    setHaber("");
+    setTipo("");
   };
   const verificarCuenta = (cuenta) => {
     const verificarCuenta = validacionCuentas(cuenta);

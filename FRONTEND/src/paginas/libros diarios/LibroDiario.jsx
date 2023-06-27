@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button, Spinner, Alert, Modal } from "react-bootstrap";
 import config from "../../config/config";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { variacionesPatrimoniales } from "../../helpers/variacionesPatrimoniales
 import LDTabla from "../../componentes/librodiario/LDTabla";
 import LibroMayor from "../../componentes/librodiario/LibroMayor";
 import BalanceSumasYSaldos from "../../componentes/librodiario/BalanceSumasYSaldos";
+import html2pdf from "html2pdf.js";
 
 const LibroDiario = () => {
   const { ID } = useParams();
@@ -25,6 +26,26 @@ const LibroDiario = () => {
   const [sumassaldos, setSumassaldos] = useState(false);
   const [cuentaMayor, setCuentaMayor] = useState("MERCADERÍAS");
   const [operacionCreada, setOperacionCreada] = useState(false);
+
+  const componentRef = useRef();
+
+  const generatePdf = () => {
+    let extra = "librodiario";
+    if(mayor){
+      extra = "Mayor_"+cuentaMayor;
+    }else if(sumassaldos){
+      extra="sumasYsaldos";
+    }
+    const opt = {
+      margin: 1,
+      filename: extra+"_"+"libro_diario:"+ID+".pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    html2pdf().set(opt).from(componentRef.current).save();
+  };
 
   let puedeEditar = sessionStorage.getItem("operacion_" + ID) ? true : false;
   const obtenerAcientos = () => {
@@ -208,9 +229,7 @@ const LibroDiario = () => {
       })
       .catch((err) => {
         setModal(!modal);
-      setMensajeOperacion(
-        "Hubo un error, por favor intentelo más tarde!"
-      );
+        setMensajeOperacion("Hubo un error, por favor intentelo más tarde!");
       });
   };
   const cancelarOperacion = () => {
@@ -235,13 +254,15 @@ const LibroDiario = () => {
             Ver balance de comprobacion de sumas y saldos
           </Button>
           <Modal show={sumassaldos} closeButton>
-            <Modal.Header>Libro de balance de sumas y saldos</Modal.Header>
-            <Modal.Body style={{ overflow: "auto" }}>
-              <BalanceSumasYSaldos
-                style={{ overflowY: "scroll" }}
-                datos={datos}
-              ></BalanceSumasYSaldos>
-            </Modal.Body>
+            <div ref={componentRef}>
+              <Modal.Header>Libro de balance de sumas y saldos</Modal.Header>
+              <Modal.Body style={{ overflow: "auto" }}>
+                <BalanceSumasYSaldos
+                  style={{ overflowY: "scroll" }}
+                  datos={datos}
+                ></BalanceSumasYSaldos>
+              </Modal.Body>
+            </div>
             <Modal.Footer>
               <Button
                 variant="danger"
@@ -251,8 +272,12 @@ const LibroDiario = () => {
               >
                 Cerrar
               </Button>
+              <Button variant="warning" onClick={generatePdf}>
+                Generar PDF
+              </Button>
             </Modal.Footer>
           </Modal>
+
           <div className="vistaMayor mb-5">
             <select
               name="select"
@@ -278,22 +303,30 @@ const LibroDiario = () => {
             >
               Ver Libro mayor
             </Button>
-            <Modal show={mayor} closeButton>
-              <Modal.Header>Libro Mayor: {cuentaMayor}</Modal.Header>
-              <Modal.Body style={{ overflow: "auto" }}>
-                <LibroMayor datos={datos} cuenta={cuentaMayor}></LibroMayor>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button
-                  variant="danger"
-                  onClick={() => {
-                    setMayor(!mayor);
-                  }}
-                >
-                  Cerrar
-                </Button>
-              </Modal.Footer>
-            </Modal>
+            <div>
+              <Modal show={mayor} closeButton>
+                <div ref={componentRef}>
+                  <Modal.Header>Libro Mayor: {cuentaMayor}</Modal.Header>
+                  <Modal.Body style={{ overflow: "auto" }}>
+                    <LibroMayor datos={datos} cuenta={cuentaMayor}></LibroMayor>
+                  </Modal.Body>
+                </div>
+                <Modal.Footer>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      setMayor(!mayor);
+                    }}
+                  >
+                    Cerrar
+                  </Button>
+
+                  <Button variant="warning" onClick={generatePdf}>
+                    Generar PDF
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </div>
           </div>
         </div>
       </div>
@@ -311,14 +344,20 @@ const LibroDiario = () => {
             <span className="visually-hidden">Guardando...</span>
           </Spinner>
         ) : (
-          <LDTabla datos={datos} id={ID} editar={puedeEditar}></LDTabla>
+          <div ref={componentRef}>
+            <LDTabla datos={datos} id={ID} editar={puedeEditar}></LDTabla>
+          </div>
         )}
+        <Button variant="warning" onClick={generatePdf}>
+              Generar PDF del libro diario
+            </Button>
 
         <div className="d-flex justify-content-between">
           {mensajeOperacion === "Operación creada!" && (
             <Alert variant="success">{mensajeOperacion}</Alert>
           )}
-          <div className="d-flex justify-content-between mb-3">
+           
+          <div className="d-flex justify-content-between my-3 ">
             {!trabajando ? (
               <>
                 <input
@@ -352,6 +391,8 @@ const LibroDiario = () => {
                 </Button>
               </>
             )}
+           
+
             <Modal show={modal} closeButton>
               <Modal.Header
                 className={

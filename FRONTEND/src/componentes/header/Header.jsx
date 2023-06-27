@@ -78,7 +78,7 @@ function Header() {
                       id={`offcanvasNavbarDropdown-expand-false`}
                     >
                       <NavDropdown.Item>
-                        <Link to={"/misdatos/"+localStorage.getItem('userID')}>Mis datos</Link>
+                        <Link to={"/usuario/"+localStorage.getItem('userID')}>Mis datos</Link>
                       </NavDropdown.Item>
                       <NavDropdown.Item>
                         <Link to="/mislibrosdiarios" >Mis libros diarios</Link>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { formatearFecha } from "../../helpers/formatearFecha";
 import { variacionesPatrimoniales } from "../../helpers/variacionesPatrimoniales";
+import { Link } from "react-router-dom";
 const Aciento = ({ aciento, color, colorOperacion = "#c3c370" }) => {
   const [debe, setDebe] = useState(false);
   const [fin, setFin] = useState(false);
@@ -32,7 +33,8 @@ const Aciento = ({ aciento, color, colorOperacion = "#c3c370" }) => {
         <td>{debe ? new Intl.NumberFormat().format(aciento.monto) : ""}</td>
         <td>{!debe ? new Intl.NumberFormat().format(aciento.monto) : ""}</td>
         <td>{aciento.tipo}</td>
-        <td>{aciento.autor}</td>
+        <td> <Link to={"/usuario/"+aciento.autor}>{aciento.autor}</Link>
+</td>
         <td>{aciento.operacion}</td>
       </tr>
     );
