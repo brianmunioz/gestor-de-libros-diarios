@@ -37,15 +37,7 @@ class LibroDiarioBDD {
       });
     });
   }
-  async editarLibroDiario(data) {
-
-    return new Promise((resolve, reject) => {
-      _conn.query(`UPDATE libros_diarios SET  nombre = ? , fecha_actualizacion= ? WHERE id = ? `,[data.nombre, data.fecha_actualizacion, data.libroDiarioID], (error, results, fields) => {
-        if (error) return reject(error);
-        return resolve(results);
-      });
-    });
-  }
+ 
   async eliminarLibroDiario(libroDiarioID) {
 
     return new Promise((resolve, reject) => {

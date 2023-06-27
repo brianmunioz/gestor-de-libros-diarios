@@ -32,28 +32,7 @@ class LibroDiarioServicio {
     return _libroDiarioBB.agregarLibroDiario(data);
 
   }
-  async editarLibroDiario(data,libroDiarioID){
-    if(!data){
-      const err = new Error('Debe ingresar los datos para que se pueda subir el aciento al libro diario');
-      err.status = 400;
-      throw err;
-    }else if(!data.nombre){
-      const err = new Error('Debe ingresar el nombre del libro diario');
-      err.status = 400;
-      throw err;
-    }
-   if(!libroDiarioID || isNaN(libroDiarioID)){
-    const err = new Error('Debe ingresar un identifcador del libro diario que sea válido');
-    err.status = 401;
-    throw err;
-   }
- 
-    data.libroDiarioID = libroDiarioID;
-    data.fecha_actualizacion = new Date();
 
-    return _libroDiarioBB.editarLibroDiario(data);
-
-  }
   async eliminarLibroDiario( libroDiarioID){
    
     if(!libroDiarioID || isNaN(libroDiarioID)){
@@ -75,7 +54,6 @@ class LibroDiarioServicio {
       return _libroDiarioBB.obtenerAcientos(libroDiarioID);
     
   }
-
     //operaciones 
     async agregarOperacion(data, libroDiarioID){
       if(!libroDiarioID|| isNaN(libroDiarioID)){
@@ -87,12 +65,9 @@ class LibroDiarioServicio {
          const err = new Error('Debe completar la descripcion de la operación');
          err.status = 400
          throw err
-       }
-       
-       data.libroDiarioID = libroDiarioID;
-   
-       return _libroDiarioBB.agregarOperacion(data);
-   
+       }       
+       data.libroDiarioID = libroDiarioID;   
+       return _libroDiarioBB.agregarOperacion(data);   
      }
 
   async agregarAciento(data, libroDiarioID, usuario){

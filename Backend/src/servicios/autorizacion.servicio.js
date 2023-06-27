@@ -43,28 +43,26 @@ class AutorizacionServicio {
     return _autorizacionesBDD.obtenerAutorizacion(datos.id, datos.libro_diario);
   }
 
-
-  async obtenerLDenLosQueTrabajo(usuario){
-    if(!usuario){
+  async obtenerLDenLosQueTrabajo(usuario) {
+    if (!usuario) {
       const error = new Error("Debe ingresar un usuario");
       error.status = 400;
       throw error;
-      
     }
     return _autorizacionesBDD.obtenerLDenLosQueTrabajo(usuario);
-   }
+  }
 
-  async usuarioEstaAutorizado(libro_diario,usuario){
+  async usuarioEstaAutorizado(libro_diario, usuario) {
     if (!libro_diario) {
       const error = new Error("Debe enviar libro diario");
       error.status = 400;
       throw error;
-    }   
-      return await _autorizacionesBDD.usuarioEstaAutorizado({libro_diario,usuario});
-
+    }
+    return await _autorizacionesBDD.usuarioEstaAutorizado({
+      libro_diario,
+      usuario,
+    });
   }
-
-
 
   async obtenerUsuariosAutorizados(libro_diario, usuario) {
     if (!libro_diario) {
@@ -82,9 +80,10 @@ class AutorizacionServicio {
       error.status = 401;
       throw error;
     }
-    return _autorizacionesBDD.obtenerUsuariosAutorizados(libro_diario);
+    const usuariosAutorizados = await _autorizacionesBDD.obtenerUsuariosAutorizados(libro_diario);
+    return usuariosAutorizados.filter((users) => users.autor !== usuario);
   }
-  async agregarAutorizacion(datos, usuario) {
+  async agregarAutorizacion(datos, usuario)  {
     if (!datos.autor) {
       const error = new Error("Debe ingresar un usuario válido");
       error.status = 400;
@@ -94,7 +93,12 @@ class AutorizacionServicio {
       error.status = 400;
       throw error;
     }
-
+const usuarioExiste = await _usuarioServicio.obtenerUsuario(datos.autor);
+if(usuarioExiste.length === 0){
+  const error = new Error("ID inexistente");
+  error.status = 400;
+  throw error;
+}
     const usuarioDelLibroDiarioIngresado =
       await _libroDiarioBDD.obtenerUsuarioIDdeLibroDiario(datos.libro_diario);
 
@@ -109,6 +113,7 @@ class AutorizacionServicio {
       { id: datos.autor, libro_diario: datos.libro_diario },
       usuario
     );
+
     if (existeAutorizacion.length > 0) {
       const error = new Error("Este usuario ya existe");
       error.status = 400;
@@ -137,7 +142,12 @@ class AutorizacionServicio {
       );
       error.status = 401;
       throw error;
+    } else if (datos.id === usuarioDelLibroDiarioIngresado) {
+      const error = new Error("No puedes eliminar tu propia autorización");
+      error.status = 400;
+      throw error;
     }
+
     const existeAutorizacion = await this.obtenerAutorizacion(datos, usuario);
     if (existeAutorizacion.length === 0) {
       const error = new Error("Este usuario no existe");

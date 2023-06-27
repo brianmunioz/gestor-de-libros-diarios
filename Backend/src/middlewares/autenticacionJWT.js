@@ -18,7 +18,7 @@ return (req, res, next)=>{
         }
         req.headers.user = decodedToken.usuario.id; 
 
-        if(accion === "getAcientos"){
+        if(accion === "Acientos"){
             const {libroDiarioID} = req.params;
            const estaAutorizado = await servicioAutorizacion.usuarioEstaAutorizado(libroDiarioID,req.headers.user);
            if(!(estaAutorizado.length > 0)){
